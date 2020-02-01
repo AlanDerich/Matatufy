@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/home">
+
+    <fragment
+        android:id="@+id/home"
+        android:name="com.derich.matatufy.Fragments.Stages"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_maps" >
+        <action
+            android:id="@+id/action_home2_to_explore"
+            app:destination="@id/explore" />
+    </fragment>
+    <fragment
+        android:id="@+id/explore"
+        android:name="com.derich.matatufy.Fragments.RideShare"
+        android:label="fragment_explore"
+        tools:layout="@layout/ride_share" >
+        <action
+            android:id="@+id/action_explore_to_more"
+            app:destination="@id/more" />
+    </fragment>
+    <fragment
+        android:id="@+id/more"
+        android:name="com.derich.matatufy.Fragments.Profile"
+        android:label="fragment_more"
+        tools:layout="@layout/profile_fragment" />
+</navigation>

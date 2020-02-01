@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "264668430448",
+    "firebase_url": "https://matatufy-5a71f.firebaseio.com",
+    "project_id": "matatufy-5a71f",
+    "storage_bucket": "matatufy-5a71f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:264668430448:android:a3d445fa8ea44ca80db4b5",
+        "android_client_info": {
+          "package_name": "com.derich.matatufy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "264668430448-4kee52fro2f721rclvs1r7fuo98slqr1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.derich.matatufy",
+            "certificate_hash": "7fd4e3a1b95de1ee15046097487bb57a8da47691"
+          }
+        },
+        {
+          "client_id": "264668430448-ilrfigj882mck98rro8bu7sehvkd51q9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.derich.matatufy",
+            "certificate_hash": "eff3ebd5fb4799111551153030d2baf76f2f37cf"
+          }
+        },
+        {
+          "client_id": "264668430448-snek82nrisuiq58267b6n7tl5vabpe6j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCmVxZw_CYoLpTa73mzfnTNbCkLGWdjEIg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "264668430448-snek82nrisuiq58267b6n7tl5vabpe6j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
