@@ -2,7 +2,9 @@ package com.derich.matatufy.Fragments;
 
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -17,8 +19,10 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -28,7 +32,6 @@ import androidx.fragment.app.Fragment;
 import com.derich.matatufy.AddStage;
 import com.derich.matatufy.MarkerInfo;
 import com.derich.matatufy.R;
-import com.derich.matatufy.RideShareInfo;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -41,6 +44,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
@@ -48,6 +52,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -81,6 +86,14 @@ public class Stages extends Fragment {
     private Location mLastKnownLocation;
     private Context mContext;
     private boolean mStoragePermissionGranted;
+    private String longitude;
+    private String latitude;
+    private Boolean open;
+    private List<MarkerInfo> stagesList;
+    private String openDays;
+    private String closingTime;
+    private String openingTime;
+    private String saccoName;
 
     public Stages() {
         // Required empty public constructor
@@ -100,6 +113,7 @@ public class Stages extends Fragment {
         getLocationPermission();
         DevicePermission();
         mContext = getContext();
+        open = false;
         mUser = FirebaseAuth.getInstance().getCurrentUser();
         if (savedInstanceState != null) {
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
@@ -121,8 +135,8 @@ public class Stages extends Fragment {
                 updateLocationUI();
                 // Get the current location of the device and set the position of the map.
                 getDeviceLocation();
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
-                final List<MarkerInfo> questionsList=new ArrayList<>();
+                final FirebaseFirestore db = FirebaseFirestore.getInstance();
+                stagesList = new ArrayList<>();
                 db.collectionGroup("allstages").get()
                         .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                             @Override
@@ -130,20 +144,45 @@ public class Stages extends Fragment {
 
                                 if (!queryDocumentSnapshots.isEmpty()){
                                     for (DocumentSnapshot snapshot:queryDocumentSnapshots)
-                                        questionsList.add(snapshot.toObject(MarkerInfo.class));
-                                    int size = questionsList.size();
+                                        stagesList.add(snapshot.toObject(MarkerInfo.class));
+                                    int size = stagesList.size();
                                     int position=0;
+                                    String snip = "Destinations :" + "\n";
                                     for (position=0;position<size;position++) {
-                                    MarkerInfo markerInfo = questionsList.get(position);
+                                    MarkerInfo markerInfo = stagesList.get(position);
+                                    if (position>0){
+                                        MarkerInfo previous = stagesList.get(position-1);
+                                    String markerPreviousPosition = previous.latitude + ":" + previous.longitude;
+                                    String markerCurrentPosition = markerInfo.latitude + ":" + markerInfo.longitude;
+                                    if (markerCurrentPosition.equals(markerPreviousPosition)){
+                                        snip = snip + markerInfo.destination + "\n";
+
+                                    }
+                                    else {
                                         mMap.addMarker(new MarkerOptions()
-                                            .position(new LatLng(Double.parseDouble(markerInfo.latitude),Double.parseDouble(markerInfo.longitude)))
-                                            .icon(bitmapDescriptorFromVector(getContext(),R.drawable.ic_local_taxi_black_24dp))
-                                            .title(markerInfo.sName)
-                                            .snippet("Destination :"+ markerInfo.destination + "\n" + "Fare :"+ markerInfo.price +"\n" + "Open time :" + markerInfo.openingT +":"+ markerInfo.closingT + "\n" + "Every :" + markerInfo.days)
-                                    );
+                                                .position(new LatLng(Double.parseDouble(previous.latitude),Double.parseDouble(previous.longitude)))
+                                                .icon(bitmapDescriptorFromVector(getContext(),R.drawable.ic_local_taxi_black_24dp))
+                                                .title(previous.sName)
+                                                .snippet(snip)
+                                        );
+                                        snip = "Destinations :" + "\n" + markerInfo.destination + "\n";
+                                    }
+
+                                    }
+                                    else {
+                                        snip = snip + markerInfo.destination + "\n";
                                     }
                                 }
-                            }
+                                    if (position == size){
+                                        MarkerInfo previous = stagesList.get(position-1);
+                                        mMap.addMarker(new MarkerOptions()
+                                                .position(new LatLng(Double.parseDouble(previous.latitude),Double.parseDouble(previous.longitude)))
+                                                .icon(bitmapDescriptorFromVector(getContext(),R.drawable.ic_local_taxi_black_24dp))
+                                                .title(previous.sName)
+                                                .snippet(snip)
+                                        );
+                                    }
+                            }}
                         });
 
 
@@ -166,10 +205,13 @@ public class Stages extends Fragment {
                         title.setTextColor(Color.BLACK);
                         title.setGravity(Gravity.CENTER);
                         title.setTypeface(null, Typeface.BOLD);
+                        title.setTextSize(22);
                         title.setText(marker.getTitle());
 
                         TextView snippet = new TextView(mContext);
                         snippet.setTextColor(Color.GRAY);
+                        snippet.setTypeface(null,Typeface.BOLD);
+                        snippet.setTextSize(20);
                         snippet.setText(marker.getSnippet());
 
                         info.addView(title);
@@ -194,11 +236,11 @@ public class Stages extends Fragment {
                             @Override
                             public boolean onMarkerClick(Marker marker) {
                                 Integer clickCount = (Integer) marker.getTag();
-                                String longitude = String.valueOf(latLng.longitude);
-                                String latitude = String.valueOf(latLng.latitude);
+                                longitude = String.valueOf(latLng.longitude);
+                                latitude = String.valueOf(latLng.latitude);
                                 Intent addStage = new Intent(getContext(), AddStage.class);
-                                addStage.putExtra("latitude",latitude);
-                                addStage.putExtra("longitude",longitude);
+                                addStage.putExtra("latitude", latitude);
+                                addStage.putExtra("longitude", longitude);
                                 startActivity(addStage);
                                 return true;
                             }
@@ -207,14 +249,98 @@ public class Stages extends Fragment {
                     }
                     }
                 });
-                mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
-                    public void onInfoWindowClick(Marker marker) {
-                        if (marker.isInfoWindowShown()){
+                    public boolean onMarkerClick(Marker marker) {
+                        if (open){
                             marker.hideInfoWindow();
+                            open = false;
                         }
                         else {
                             marker.showInfoWindow();
+                            open = true;
+                        }
+                    return true;
+                    }
+                });
+                mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                    @Override
+                    public void onInfoWindowClick(Marker marker) {
+                        LatLng markerPos = marker.getPosition();
+                        latitude = String.valueOf(markerPos.latitude);
+                        longitude = String.valueOf(markerPos.longitude);
+                        if (!(mUser.getEmail().isEmpty())){
+                            if (mUser.getEmail().equals("alangitonga15@gmail.com") || mUser.getEmail().equals("mwanjirug25@gmail.com")){
+                                final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                                builder.setTitle("Choose an action");
+                                String[] options = {"Add New Destination","Delete destination","View destinations info"};
+                                builder.setItems(options, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(final DialogInterface dialog, int which) {
+                                        switch (which){
+                                            case 0:
+                                                Intent add= new Intent(getContext(),AddStage.class);
+                                                add.putExtra("latitude",latitude);
+                                                add.putExtra("longitude",longitude);
+                                                startActivity(add);
+                                                break;
+                                            case 1:
+                                                db.collection("stages").document(AddStage.encode(latitude)+ ":" + AddStage.encode(longitude)).collection("allstages").get()
+                                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                if (task.isSuccessful()){
+                                                                    final List<String> destns = new ArrayList<>();
+                                                                  for (QueryDocumentSnapshot doc: task.getResult())
+                                                                      destns.add(doc.getId());
+                                                                  AlertDialog.Builder builderDestns = new AlertDialog.Builder(getContext());
+                                                                  builderDestns.setTitle("Destinations on the stage");
+                                                                  String[] listDestns = destns.toArray(new String[destns.size()]);
+                                                                  builderDestns.setItems(listDestns, new DialogInterface.OnClickListener() {
+                                                                      @Override
+                                                                      public void onClick(DialogInterface dialog, int which) {
+                                                                          String destine = destns.get(which);
+                                                                          db.collection("stages").document(AddStage.encode(latitude)+ ":" + AddStage.encode(longitude)).collection("allstages").document(destine)
+                                                                                  .delete()
+                                                                                  .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                      @Override
+                                                                                      public void onSuccess(Void aVoid) {
+                                                                                          Toast.makeText(getContext(),    "Destination deleted successfully", Toast.LENGTH_SHORT).show();
+                                                                                      }
+                                                                                  })
+                                                                                  .addOnFailureListener(new OnFailureListener() {
+                                                                                      @Override
+                                                                                      public void onFailure(@NonNull Exception e) {
+                                                                                          Toast.makeText(getContext(),    "Error" + e, Toast.LENGTH_SHORT).show();
+                                                                                      }
+                                                                                  });
+                                                                      }
+                                                                  });
+                                                                  AlertDialog dialog1 = builderDestns.create();
+                                                                  dialog1.show();
+                                                                }
+                                                                else {
+                                                                    Toast.makeText(getContext(),    "Error getting associated destinations", Toast.LENGTH_SHORT).show();
+                                                                }
+                                                            }
+                                                        });
+                                        break;
+                                            case 2:
+                                                displayStageInfo();
+                                                break;
+
+                                        }
+                                    }
+                                });
+                                AlertDialog dialog = builder.create();
+                                dialog.show();
+                            }
+                            else {
+                                displayStageInfo();
+                            }
+                        }
+                        else {
+                            Toast.makeText(getContext(),    "Please login to get more information on this stage", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -290,6 +416,42 @@ public class Stages extends Fragment {
             }
         }
         updateLocationUI();
+    }
+    private void displayStageInfo(){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        int size = stagesList.size();
+
+        int position=0;
+        String markerCurrentPos = latitude + ":" + longitude;
+        ArrayList<String> arrayList = new ArrayList<>();
+        for (position=0;position<size;position++) {
+            MarkerInfo markerInfo = stagesList.get(position);
+            String markerCurrentPosition = markerInfo.latitude + ":" + markerInfo.longitude;
+            if (markerCurrentPos.equals(markerCurrentPosition)) {
+                saccoName = "Sacco name : " +markerInfo.sName;
+                openingTime = "Opening time : "+markerInfo.openingT;
+                closingTime = "Closing time : "+markerInfo.closingT;
+                openDays = "Open days : " +markerInfo.days + "\n";
+                arrayList.add("Destination : "+markerInfo.destination);
+                arrayList.add("Fare : " + markerInfo.price);
+                arrayList.add("\n");
+
+                final ArrayAdapter<String> aa1 = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, arrayList);
+
+                builder.setAdapter(aa1, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+            }
+        }
+        arrayList.add(saccoName);
+        arrayList.add(openingTime);
+        arrayList.add(closingTime);
+        arrayList.add(openDays);
+        AlertDialog dialog1 = builder.create();
+        dialog1.show();
     }
     private void getLocationPermission() {
         /*
