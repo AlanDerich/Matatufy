@@ -13,6 +13,8 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.location.LocationListener;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -28,8 +30,11 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleOwner;
 
 import com.derich.matatufy.AddStage;
+import com.derich.matatufy.BoundLocationManager;
 import com.derich.matatufy.MarkerInfo;
 import com.derich.matatufy.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -58,12 +63,15 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.firebase.ui.auth.AuthUI.getApplicationContext;
+
 /**
  * A simple {@link Fragment} subclass.
  */
-public class Stages extends Fragment {
+public class Stages extends Fragment implements LifecycleOwner {
     private GoogleMap mMap;
     private FirebaseUser mUser;
+    LifecycleOwner lifecycleOwner;
 
     // The entry point to the Fused Location Provider.
     private FusedLocationProviderClient mFusedLocationProviderClient;
@@ -75,6 +83,7 @@ public class Stages extends Fragment {
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 2;
     private boolean mLocationPermissionGranted;
+    private LocationListener mGpsListener = new MyLocationListener();
 
     // The geographical location where the device is currently located. That is, the last-known
     // location retrieved by the Fused Location Provider.
@@ -111,6 +120,7 @@ public class Stages extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_maps, container, false);
         getLocationPermission();
+        bindLocationListener();
         DevicePermission();
         mContext = getContext();
         open = false;
@@ -273,7 +283,7 @@ public class Stages extends Fragment {
                             if (mUser.getEmail().equals("alangitonga15@gmail.com") || mUser.getEmail().equals("mwanjirug25@gmail.com")){
                                 final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                                 builder.setTitle("Choose an action");
-                                String[] options = {"Add New Destination","Delete destination","View destinations info"};
+                                String[] options = {"Add New Destination","Delete destination","Edit destination info","View destinations info"};
                                 builder.setItems(options, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(final DialogInterface dialog, int which) {
@@ -325,7 +335,7 @@ public class Stages extends Fragment {
                                                             }
                                                         });
                                         break;
-                                            case 2:
+                                            case 3:
                                                 displayStageInfo();
                                                 break;
 
@@ -337,6 +347,7 @@ public class Stages extends Fragment {
                             }
                             else {
                                 displayStageInfo();
+
                             }
                         }
                         else {
@@ -353,7 +364,7 @@ public class Stages extends Fragment {
 
 
     private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
-        Drawable vectorDrawable = ContextCompat.getDrawable(this.getContext(), vectorResId);
+        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
         vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
         Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
@@ -405,6 +416,7 @@ public class Stages extends Fragment {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     mLocationPermissionGranted = true;
+                    bindLocationListener();
                 }
             }
             case PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
@@ -441,7 +453,28 @@ public class Stages extends Fragment {
                 builder.setAdapter(aa1, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        AlertDialog.Builder builderSelect = new AlertDialog.Builder(getContext());
+                        builderSelect.setTitle("Directions");
+                        builderSelect.setMessage("Do you want to get the directions to the stage from your location?");
+                        builderSelect.setCancelable(false);
+                        builderSelect.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Uri gmmIntentUri = Uri.parse("google.navigation:q=" + latitude + "," + longitude);
+                                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                                mapIntent.setPackage("com.google.android.apps.maps");
+                                startActivity(mapIntent);
 
+                            }
+                        });
+                        builderSelect.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                        AlertDialog select = builderSelect.create();
+                        select.show();
                     }
                 });
             }
@@ -512,6 +545,29 @@ public class Stages extends Fragment {
         }
     }
 
+    private class MyLocationListener implements LocationListener {
+        @Override
+        public void onLocationChanged(Location location) {
+            //textView.setText(location.getLatitude() + ", " + location.getLongitude());
+            mLastKnownLocation = location;
+        }
 
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+            Toast.makeText(getContext(),
+                    "Provider enabled: " + provider, Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+        }
+    }
+    private void bindLocationListener() {
+        BoundLocationManager.bindLocationListenerIn(this, mGpsListener, getContext());
+    }
 
 }

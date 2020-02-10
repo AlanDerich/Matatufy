@@ -9,6 +9,12 @@ public class RideShareInfo {
     public String destination;
     public String time;
     public String amount;
+    public String rideSharee;
+    public String email;
+
+    public String getRideSharee() {
+        return rideSharee;
+    }
 
     public String getDriverName() {
         return driverName;
@@ -46,7 +52,7 @@ public class RideShareInfo {
 
     }
 
-    public RideShareInfo(String driverName, String carModel, String driverPhone, String date, String from, String destination, String time, String amount) {
+    public RideShareInfo(String driverName, String carModel, String driverPhone, String date, String from, String destination, String time, String amount,String rideSharee,String email) {
         this.driverName = driverName;
         this.carModel = carModel;
         this.driverPhone = driverPhone;
@@ -55,5 +61,7 @@ public class RideShareInfo {
         this.destination = destination;
         this.time = time;
         this.amount = amount;
+        this.rideSharee = rideSharee;
+        this.email = email;
     }
 }

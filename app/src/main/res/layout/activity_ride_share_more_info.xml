@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AddRideShare">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/textViewRSMIName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="Name :"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textViewRSMIModel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Car Model :"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/textViewRSMIName"
+            app:layout_constraintTop_toBottomOf="@+id/textViewRSMIName" />
+
+        <TextView
+            android:id="@+id/textViewRSMIDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Date :"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/textViewRSMIModel"
+            app:layout_constraintTop_toBottomOf="@+id/textViewRSMIModel" />
+
+        <TextView
+            android:id="@+id/textViewRSMIFrom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="From :"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/textViewRSMITime"
+            app:layout_constraintTop_toBottomOf="@+id/textViewRSMITime" />
+
+        <TextView
+            android:id="@+id/textViewRSMITo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Destination :"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/textViewRSMIFrom"
+            app:layout_constraintTop_toBottomOf="@+id/textViewRSMIFrom" />
+
+        <TextView
+            android:id="@+id/textViewRSMITime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Time :"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/textViewRSMIDate"
+            app:layout_constraintTop_toBottomOf="@+id/textViewRSMIDate" />
+
+        <TextView
+            android:id="@+id/textViewRSMIFare"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Fare in Ksh :"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/textViewRSMITo"
+            app:layout_constraintTop_toBottomOf="@+id/textViewRSMITo" />
+
+        <TextView
+            android:id="@+id/textViewRSMIRidesharees"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="Required passengers:"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/textViewRSMIFare"
+            app:layout_constraintTop_toBottomOf="@+id/textViewRSMIFare" />
+
+        <TextView
+            android:id="@+id/textViewInfoName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/name"
+            android:textStyle="bold|italic"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textViewRSMIName"
+            app:layout_constraintTop_toTopOf="@+id/textViewRSMIName" />
+
+        <TextView
+            android:id="@+id/textViewInfoModel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/carModel"
+            android:textStyle="bold|italic"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/textViewInfoName"
+            app:layout_constraintTop_toTopOf="@+id/textViewRSMIModel" />
+
+        <TextView
+            android:id="@+id/textViewInfoDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date"
+            android:textStyle="bold|italic"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/textViewInfoModel"
+            app:layout_constraintTop_toTopOf="@+id/textViewRSMIDate" />
+
+        <TextView
+            android:id="@+id/textViewInfoTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Time"
+            android:textStyle="bold|italic"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/textViewInfoDate"
+            app:layout_constraintTop_toTopOf="@+id/textViewRSMITime" />
+
+        <TextView
+            android:id="@+id/textViewInfoFrom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/departure_location"
+            android:textStyle="bold|italic"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/textViewInfoTime"
+            app:layout_constraintTop_toTopOf="@+id/textViewRSMIFrom" />
+
+        <TextView
+            android:id="@+id/textViewInfoDestination"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/where_to"
+            android:textStyle="bold|italic"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/textViewInfoFrom"
+            app:layout_constraintTop_toTopOf="@+id/textViewRSMITo" />
+
+        <TextView
+            android:id="@+id/textViewInfoFare"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/fareAmount"
+            android:textStyle="bold|italic"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/textViewInfoDestination"
+            app:layout_constraintTop_toTopOf="@+id/textViewRSMIFare" />
+
+        <TextView
+            android:id="@+id/textViewInfoPassengers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no_needed"
+            android:textStyle="bold|italic"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/textViewInfoFare"
+            app:layout_constraintTop_toTopOf="@+id/textViewRSMIRidesharees" />
+
+        <ImageButton
+            android:id="@+id/imageButtonCallRidesharer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:foregroundGravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/textViewRSMIRidesharees"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewRSMIRidesharees"
+            app:srcCompat="@drawable/ic_call_black_24dp" />
+
+        <ImageButton
+            android:id="@+id/imageButtonMessageRidesharer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.09"
+            app:layout_constraintStart_toEndOf="@+id/imageButtonCallRidesharer"
+            app:layout_constraintTop_toTopOf="@+id/imageButtonCallRidesharer"
+            app:srcCompat="@drawable/ic_message_black_24dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

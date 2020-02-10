@@ -22,6 +22,7 @@ import com.derich.matatufy.FirebaseUI;
 import com.derich.matatufy.R;
 import com.derich.matatufy.RideShareAdapter;
 import com.derich.matatufy.RideShareInfo;
+import com.derich.matatufy.RideShareMoreInfo;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -37,7 +38,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class RideShare extends Fragment {
+public class RideShare extends Fragment implements RideShareAdapter.OnRideClickListener {
     private TextView tvFilters;
     private List<RideShareInfo> mRideshareInfo;
     private RecyclerView mRecyclerView;
@@ -633,9 +634,32 @@ public class RideShare extends Fragment {
     }
 
     private void populate(){
-        RideShareAdapter mRideShareAdapter = new RideShareAdapter(mRideshareInfo);
+        RideShareAdapter mRideShareAdapter = new RideShareAdapter(mRideshareInfo,this);
         mRideShareAdapter.notifyDataSetChanged();
         mRecyclerView.setAdapter(mRideShareAdapter);
 
+    }
+
+    @Override
+    public void onRideClick(int position) {
+        RideShareInfo minfo = mRideshareInfo.get(position);
+        if (user.getEmail().isEmpty()){
+         Toast.makeText(getContext(),"You have to verify your email address to continue",Toast.LENGTH_LONG).show();
+
+        }
+        else {
+            Intent intent = new Intent(getContext(), RideShareMoreInfo.class);
+            intent.putExtra("RidesharerName", minfo.driverName);
+            intent.putExtra("RidesharerDate", minfo.date);
+            intent.putExtra("RidesharerFrom", minfo.from);
+            intent.putExtra("RidesharerDestination", minfo.destination);
+            intent.putExtra("RidesharerTime", minfo.time);
+            intent.putExtra("RidesharerAmount", minfo.amount);
+            intent.putExtra("RidesharerSharees", minfo.rideSharee);
+            intent.putExtra("RidesharerModel", minfo.carModel);
+            intent.putExtra("RidesharerPhone", minfo.driverPhone);
+            intent.putExtra("RidesharerEmail", minfo.email);
+            startActivity(intent);
+        }
     }
 }

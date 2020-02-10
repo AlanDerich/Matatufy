@@ -34,9 +34,11 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class AddRideShare extends AppCompatActivity {
-    private EditText et_name,et_model,et_phone,et_from,et_to,et_cash;
+    private EditText et_name,et_model,et_phone,et_from,et_to,et_cash,et_rideSharee;
     private TextView et_date,et_time;
     private FirebaseUser mUser;
+    private int selMin;
+    private int selHour;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +46,7 @@ public class AddRideShare extends AppCompatActivity {
         setContentView(R.layout.activity_add_ride_share);
         mUser = FirebaseAuth.getInstance().getCurrentUser();
         et_name = findViewById(R.id.editText_add_name);
+        et_rideSharee = findViewById(R.id.editText_rideSharees);
         et_model = findViewById(R.id.editText_add_model);
         et_phone = findViewById(R.id.editText_add_phone);
         et_date = findViewById(R.id.editText_add_date);
@@ -61,6 +64,8 @@ public class AddRideShare extends AppCompatActivity {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                         et_time.setText(selectedHour + " : " +selectedMinute);
+                        selHour = selectedHour;
+                        selMin = selectedMinute;
                     }
                 },hour,minute,true);
                 mTimePicker.setTitle("Select Time");
@@ -119,8 +124,9 @@ public class AddRideShare extends AppCompatActivity {
         String date = et_date.getText().toString().trim();
         String from = et_from.getText().toString().trim();
         String destination= et_to.getText().toString().trim();
-        String time = et_time.getText().toString().trim();
+        String time = et_time.getText().toString();
         String amount= et_cash.getText().toString().trim();
+        String rideSharees = et_rideSharee.getText().toString().trim();
 
         FirebaseFirestore mFirestone = FirebaseFirestore.getInstance();
             String email = mUser.getEmail();
@@ -128,23 +134,23 @@ public class AddRideShare extends AppCompatActivity {
             if (email.equals("")){
                 Toast.makeText(this,"You don't have an email address. Please click on your profile and add an email to continue.",Toast.LENGTH_LONG).show();
             }
-            else if (!verified){
-                Toast.makeText(this,"Email not verified. Please click on your profile and verify your email to continue.",Toast.LENGTH_LONG).show();
-            }
+
             else {
-                if (driverName.equals("") || carModel.equals("") || driverPhone.equals("") || date.equals("Click to select Date") || from.equals("") || destination.equals("") || time.equals("Click to select time") || amount.equals("")){
+                if (driverName.isEmpty() || carModel.isEmpty() || driverPhone.isEmpty() || date.equals("Click to select Date") || from.isEmpty() || destination.isEmpty() || time.equals("Click to select time") || amount.isEmpty() || rideSharees.isEmpty()){
                     Toast.makeText(this,"All fields are required. Please fill to continue",Toast.LENGTH_SHORT).show();
 
                 }
                 else {
                     try {
-                        if (new SimpleDateFormat("dd/MM/yyyy").parse(date).before(new Date())) {
-                            Toast.makeText(AddRideShare.this,"Please select a valid date",Toast.LENGTH_SHORT).show();
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                        final String currentDateandTimeOfAdd = sdf.format(new Date());
+                        if (sdf.parse(date + " "+selHour + ":" + selMin).before(sdf.parse(currentDateandTimeOfAdd))) {
+                            Toast.makeText(AddRideShare.this,"Please select a valid date and time",Toast.LENGTH_SHORT).show();
                         }
                         else {
-                            RideShareInfo mRideShareInfo = new RideShareInfo(driverName, carModel, driverPhone, date, from, destination, time, amount);
+                            RideShareInfo mRideShareInfo = new RideShareInfo(driverName, carModel, driverPhone, date, from, destination, time, amount,rideSharees,email);
                             mFirestone.collection("RideShares").document(email).collection("all rideshares")
-                                    .document(encode(date)).set(mRideShareInfo)
+                                    .document(encode(date)+" at " + time).set(mRideShareInfo)
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
