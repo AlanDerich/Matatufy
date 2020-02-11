@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -35,6 +36,7 @@ import androidx.lifecycle.LifecycleOwner;
 
 import com.derich.matatufy.AddStage;
 import com.derich.matatufy.BoundLocationManager;
+import com.derich.matatufy.FirebaseUI;
 import com.derich.matatufy.MarkerInfo;
 import com.derich.matatufy.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -55,14 +57,18 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.firebase.ui.auth.AuthUI.TAG;
 import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
 /**
@@ -103,6 +109,7 @@ public class Stages extends Fragment implements LifecycleOwner {
     private String closingTime;
     private String openingTime;
     private String saccoName;
+    private Context context;
 
     public Stages() {
         // Required empty public constructor
@@ -124,6 +131,7 @@ public class Stages extends Fragment implements LifecycleOwner {
         DevicePermission();
         mContext = getContext();
         open = false;
+        context = getContext();
         mUser = FirebaseAuth.getInstance().getCurrentUser();
         if (savedInstanceState != null) {
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
@@ -132,7 +140,7 @@ public class Stages extends Fragment implements LifecycleOwner {
 
         // Construct a FusedLocationProviderClient.
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
-
+        getDeviceLocation();
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);  //use SuppoprtMapFragment for using in fragment instead of activity  MapFragment = activity   SupportMapFragment = fragment
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
@@ -144,59 +152,8 @@ public class Stages extends Fragment implements LifecycleOwner {
                 mMap.getUiSettings().setCompassEnabled(true);
                 updateLocationUI();
                 // Get the current location of the device and set the position of the map.
-                getDeviceLocation();
                 final FirebaseFirestore db = FirebaseFirestore.getInstance();
-                stagesList = new ArrayList<>();
-                db.collectionGroup("allstages").get()
-                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                            @Override
-                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-
-                                if (!queryDocumentSnapshots.isEmpty()){
-                                    for (DocumentSnapshot snapshot:queryDocumentSnapshots)
-                                        stagesList.add(snapshot.toObject(MarkerInfo.class));
-                                    int size = stagesList.size();
-                                    int position=0;
-                                    String snip = "Destinations :" + "\n";
-                                    for (position=0;position<size;position++) {
-                                    MarkerInfo markerInfo = stagesList.get(position);
-                                    if (position>0){
-                                        MarkerInfo previous = stagesList.get(position-1);
-                                    String markerPreviousPosition = previous.latitude + ":" + previous.longitude;
-                                    String markerCurrentPosition = markerInfo.latitude + ":" + markerInfo.longitude;
-                                    if (markerCurrentPosition.equals(markerPreviousPosition)){
-                                        snip = snip + markerInfo.destination + "\n";
-
-                                    }
-                                    else {
-                                        mMap.addMarker(new MarkerOptions()
-                                                .position(new LatLng(Double.parseDouble(previous.latitude),Double.parseDouble(previous.longitude)))
-                                                .icon(bitmapDescriptorFromVector(getContext(),R.drawable.ic_local_taxi_black_24dp))
-                                                .title(previous.sName)
-                                                .snippet(snip)
-                                        );
-                                        snip = "Destinations :" + "\n" + markerInfo.destination + "\n";
-                                    }
-
-                                    }
-                                    else {
-                                        snip = snip + markerInfo.destination + "\n";
-                                    }
-                                }
-                                    if (position == size){
-                                        MarkerInfo previous = stagesList.get(position-1);
-                                        mMap.addMarker(new MarkerOptions()
-                                                .position(new LatLng(Double.parseDouble(previous.latitude),Double.parseDouble(previous.longitude)))
-                                                .icon(bitmapDescriptorFromVector(getContext(),R.drawable.ic_local_taxi_black_24dp))
-                                                .title(previous.sName)
-                                                .snippet(snip)
-                                        );
-                                    }
-                            }}
-                        });
-
-
-
+               getLocations();
 
                 mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
@@ -230,10 +187,11 @@ public class Stages extends Fragment implements LifecycleOwner {
                         return info;
                     }
                 });
+
                 mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                     @Override
                     public void onMapClick(final LatLng latLng) {
-                        if (mUser!=null)
+                        if (mUser!=null){
                         if (!(mUser.getEmail().isEmpty())){
                             if (mUser.getEmail().equals("alangitonga15@gmail.com") || mUser.getEmail().equals("mwanjirug25@gmail.com")){
                                 MarkerOptions markerOptions= new MarkerOptions();
@@ -245,23 +203,49 @@ public class Stages extends Fragment implements LifecycleOwner {
                                  mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                             @Override
                             public boolean onMarkerClick(Marker marker) {
-                                Integer clickCount = (Integer) marker.getTag();
+                                final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                                builder.setTitle("Confirmation.")
+                                        .setMessage("Are you sure you want to add a new stage to this location?")
+                                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.cancel();
+                                                getLocations();
+                                            }
+                                        })
+                                        .setCancelable(false)
+                                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+
+                                                //   Integer clickCount = (Integer) marker.getTag();
                                 longitude = String.valueOf(latLng.longitude);
                                 latitude = String.valueOf(latLng.latitude);
                                 Intent addStage = new Intent(getContext(), AddStage.class);
                                 addStage.putExtra("latitude", latitude);
                                 addStage.putExtra("longitude", longitude);
                                 startActivity(addStage);
+                                            }
+                                        });
+                                AlertDialog alertDialogConfirm = builder.create();
+                                alertDialogConfirm.show();
                                 return true;
                             }
                         });
                         }
                     }
                     }
+                        else {
+                            Toast.makeText(getContext(),"Please login to continue",Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(getContext(), FirebaseUI.class));
+                        }
+                }
+
                 });
                 mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
+                        mMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
                         if (open){
                             marker.hideInfoWindow();
                             open = false;
@@ -360,6 +344,83 @@ public class Stages extends Fragment implements LifecycleOwner {
         });
 
         return rootView;
+    }
+
+    private void getLocations() {
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+        stagesList = new ArrayList<>();
+        db.collectionGroup("allstages").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    //Log.w(TAG, "listen:error", e);
+                    return;
+                }
+
+                for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
+                    switch (dc.getType()) {
+                        case ADDED:
+                            queryDocSnapShotMethod(queryDocumentSnapshots);
+                            break;
+                        case MODIFIED:
+                            queryDocSnapShotMethod(queryDocumentSnapshots);
+                            break;
+                        case REMOVED:
+                            queryDocSnapShotMethod(queryDocumentSnapshots);
+                            break;
+                    }
+                }
+
+            }
+        });
+
+    }
+
+    private void queryDocSnapShotMethod(QuerySnapshot queryDocumentSnapshots) {
+        mMap.clear();
+        open = false;
+        stagesList = new ArrayList<>();
+        if (!queryDocumentSnapshots.isEmpty()){
+            for (DocumentSnapshot snapshot:queryDocumentSnapshots)
+                stagesList.add(snapshot.toObject(MarkerInfo.class));
+            int size = stagesList.size();
+            int position;
+            String snip = "Destinations :" + "\n";
+            for (position=0;position<size;position++) {
+                MarkerInfo markerInfo = stagesList.get(position);
+                if (position>0){
+                    MarkerInfo previous = stagesList.get(position-1);
+                    String markerPreviousPosition = previous.latitude + ":" + previous.longitude;
+                    String markerCurrentPosition = markerInfo.latitude + ":" + markerInfo.longitude;
+                    if (markerCurrentPosition.equals(markerPreviousPosition)){
+                        snip = snip + markerInfo.destination + "\n";
+
+                    }
+                    else {
+                        mMap.addMarker(new MarkerOptions()
+                                .position(new LatLng(Double.parseDouble(previous.latitude),Double.parseDouble(previous.longitude)))
+                                .icon(bitmapDescriptorFromVector(context,R.drawable.ic_local_taxi_black_24dp))
+                                .title(previous.sName)
+                                .snippet(snip)
+                        );
+                        snip = "Destinations :" + "\n" + markerInfo.destination + "\n";
+                    }
+
+                }
+                else {
+                    snip = snip + markerInfo.destination + "\n";
+                }
+            }
+            if (position == size){
+                MarkerInfo previous = stagesList.get(position-1);
+                mMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(Double.parseDouble(previous.latitude),Double.parseDouble(previous.longitude)))
+                        .icon(bitmapDescriptorFromVector(context,R.drawable.ic_local_taxi_black_24dp))
+                        .title(previous.sName)
+                        .snippet(snip)
+                );
+            }
+        }
     }
 
 

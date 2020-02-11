@@ -80,6 +80,7 @@ private String mLongs;
         switch(item.getItemId()){
             case R.id.saveStage :
                 saveStage();
+                return true;
                 default:
                     return super.onOptionsItemSelected(item);
         }
@@ -119,6 +120,6 @@ private String mLongs;
         return coOrdns.replace(".",",");
     }
     public static String decode(String coOrdns){
-        return coOrdns.replace(".",",");
+        return coOrdns.replace(",",".");
     }
 }
