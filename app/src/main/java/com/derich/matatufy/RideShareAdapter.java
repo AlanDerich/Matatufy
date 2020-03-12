@@ -40,6 +40,15 @@ public class RideShareAdapter extends RecyclerView.Adapter<RideShareAdapter.View
         holder.rideSharee.setText(rI.getRideSharee());
 
     }
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
     @Override
     public int getItemCount() {

@@ -1,9 +1,12 @@
 package com.derich.matatufy.Fragments;
 
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PatternMatcher;
@@ -19,6 +22,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
@@ -46,6 +51,8 @@ public class Profile extends Fragment {
     private String m_text;
     private final int PICK_IMAGE_REQUEST = 71;
     private Uri filePath;
+    private static int PERMISSION_REQUEST_ACCESS_FINE_LOCATION = 1;
+
     public Profile() {
         // Required empty public constructor
     }
@@ -110,7 +117,9 @@ public class Profile extends Fragment {
                 tvEmail.setText(email);}
             }
             UID.setText(uid);
-            Glide.with(this).load(photoUrl).into(imgProfile);
+            if (photoUrl != null){
+                Glide.with(this).load(photoUrl).into(imgProfile);
+            }
             imgProfile.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -135,11 +144,12 @@ public class Profile extends Fragment {
                 @Override
                 public void onClick(View view) {
                     m_text = "";
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.AlertDialogStyle);
                     builder.setTitle("Email Address");
 
 // Set up the input
                     final EditText input = new EditText(getContext());
+                    input.setTextColor(Color.parseColor("#0BF5AB"));
 // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
                     input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
                     builder.setView(input);
@@ -237,11 +247,12 @@ public class Profile extends Fragment {
 
     private void EditEmail() {
         m_text = "";
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.AlertDialogStyle);
         builder.setTitle("New Email");
 
 // Set up the input
         final EditText input = new EditText(getContext());
+        input.setTextColor(Color.parseColor("#0BF5AB"));
 // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
         input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
         builder.setView(input);
@@ -285,11 +296,12 @@ public class Profile extends Fragment {
 
     public void EditNameInfo(){
     m_text = "";
-    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+    AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.AlertDialogStyle);
     builder.setTitle("New Username");
 
 // Set up the input
     final EditText input = new EditText(getContext());
+        input.setTextColor(Color.parseColor("#0BF5AB"));
 // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
     input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
     builder.setView(input);
@@ -333,11 +345,43 @@ public class Profile extends Fragment {
     builder.show();
 }
     private void chooseImage() {
+        if (ContextCompat.checkSelfPermission(getContext(),Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+            getProfPic();
+
+        }
+        else if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)){
+            Toast.makeText(getContext(),"The permission only allows for image uploading",Toast.LENGTH_SHORT).show();
+            ActivityCompat.requestPermissions(getActivity(),new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},
+                    PERMISSION_REQUEST_ACCESS_FINE_LOCATION );
+        }
+        else  if (ContextCompat.checkSelfPermission(getContext(),Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
+            Toast.makeText(getContext(),"Oops! The required permission was denied.Go to settings and enable it to upload your profile picture",Toast.LENGTH_SHORT).show();
+            ActivityCompat.requestPermissions(getActivity(),new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},
+                    PERMISSION_REQUEST_ACCESS_FINE_LOCATION );
+
+        }
+        else {
+            ActivityCompat.requestPermissions(getActivity(),new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},
+                    PERMISSION_REQUEST_ACCESS_FINE_LOCATION );
+        }
+         }
+
+    private void getProfPic() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if(requestCode == PERMISSION_REQUEST_ACCESS_FINE_LOCATION){
+            if (grantResults.length> 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                getProfPic();
+            }
+        }
+    }
+
     public void signOut() {
         AuthUI.getInstance()
                 .signOut(getContext())

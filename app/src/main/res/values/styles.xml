@@ -16,5 +16,23 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="AppThemeBase" parent="Theme.AppCompat.Light">
+        <item name="colorPrimary">#E9F5F2</item>
+        <item name="colorPrimaryDark">#0B0E0D</item>
+        <item name="colorAccent">#0BF5AB</item>
+        <item name="android:textColor">#E9F5F2</item>
+        <item name="android:textColorHint">#D69F9F</item>
+        <item name="android:background">@color/colorPrimaryBackgroundDark</item>
+        <item name="editTextColor">@color/colorPrimaryWhite</item>
+    </style>
+
+    <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:colorAccent">#f3f3f3</item>
+        <item name="android:textColor">#f3f3f3</item>
+        <item name="android:textColorPrimary">#f3f3f3</item>
+    </style>
+    <style name="et" parent="@android:style/Widget.EditText">
+        <item name="android:textColor">@color/colorPrimaryWhite</item>
+    </style>
 
 </resources>

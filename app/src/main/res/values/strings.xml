@@ -16,4 +16,5 @@
     <string name="click_to_select_date">Click to select Date</string>
     <string name="e_g_0712345678">e.g. 0712345678</string>
     <string name="departure_location">Departure location</string>
+    <string name="tap_to_set_filters">Tap to set filters</string>
 </resources>

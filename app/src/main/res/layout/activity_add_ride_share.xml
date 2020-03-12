@@ -31,6 +31,7 @@
             android:hint="@string/name"
             android:importantForAutofill="no"
             android:inputType="textPersonName"
+            android:textColor="#F8F5F5"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.27"
             app:layout_constraintStart_toEndOf="@+id/textView22"
@@ -47,18 +48,19 @@
         app:layout_constraintStart_toStartOf="@+id/textView12"
         app:layout_constraintTop_toBottomOf="@+id/textView12" />
 
-    <EditText
-        android:id="@+id/editText_add_model"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="13dp"
-        android:ems="8"
-        android:hint="@string/carModel"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="@+id/editText_add_name"
-        app:layout_constraintStart_toStartOf="@+id/editText_add_name"
-        app:layout_constraintTop_toBottomOf="@+id/editText_add_name"
-        android:importantForAutofill="no" />
+        <EditText
+            android:id="@+id/editText_add_model"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="13dp"
+            android:ems="8"
+            android:hint="@string/carModel"
+            android:importantForAutofill="no"
+            android:inputType="textPersonName"
+            android:textColor="#E8E6E6"
+            app:layout_constraintEnd_toEndOf="@+id/editText_add_name"
+            app:layout_constraintStart_toStartOf="@+id/editText_add_name"
+            app:layout_constraintTop_toBottomOf="@+id/editText_add_name" />
 
     <TextView
         android:id="@+id/textView15"
@@ -79,6 +81,7 @@
             android:ems="8"
             android:hint="@string/e_g_0712345678"
             android:inputType="number|phone"
+            android:textColor="#F1F1F1"
             app:layout_constraintEnd_toEndOf="@+id/editText_add_model"
             app:layout_constraintStart_toStartOf="@+id/editText_add_model"
             app:layout_constraintTop_toBottomOf="@+id/editText_add_model" />
@@ -127,6 +130,7 @@
             android:ems="8"
             android:hint="@string/departure_location"
             android:inputType="textPersonName"
+            android:textColor="#FFFFFF"
             app:layout_constraintEnd_toEndOf="@+id/editText_add_date"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/editText_add_date"
@@ -143,18 +147,19 @@
         app:layout_constraintStart_toStartOf="@+id/textView19"
         app:layout_constraintTop_toBottomOf="@+id/textView19" />
 
-    <EditText
-        android:id="@+id/editText_add_to"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:ems="8"
-        android:hint="@string/where_to"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="@+id/editText_add_from"
-        app:layout_constraintStart_toStartOf="@+id/editText_add_from"
-        app:layout_constraintTop_toBottomOf="@+id/editText_add_from"
-        android:importantForAutofill="no" />
+        <EditText
+            android:id="@+id/editText_add_to"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:ems="8"
+            android:hint="@string/where_to"
+            android:importantForAutofill="no"
+            android:inputType="textPersonName"
+            android:textColor="#FFF9F9"
+            app:layout_constraintEnd_toEndOf="@+id/editText_add_from"
+            app:layout_constraintStart_toStartOf="@+id/editText_add_from"
+            app:layout_constraintTop_toBottomOf="@+id/editText_add_from" />
 
     <TextView
         android:id="@+id/textView23"
@@ -191,17 +196,18 @@
         app:layout_constraintStart_toStartOf="@+id/textView23"
         app:layout_constraintTop_toBottomOf="@+id/textView23" />
 
-    <EditText
-        android:id="@+id/editText_add_cash"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:ems="8"
-        android:hint="@string/fareAmount"
-        android:inputType="numberDecimal"
-        app:layout_constraintEnd_toEndOf="@+id/editText_add_time"
-        app:layout_constraintStart_toStartOf="@+id/editText_add_time"
-        app:layout_constraintTop_toBottomOf="@+id/editText_add_time" />
+        <EditText
+            android:id="@+id/editText_add_cash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:ems="8"
+            android:hint="@string/fareAmount"
+            android:inputType="numberDecimal"
+            android:textColor="#F3E7E7"
+            app:layout_constraintEnd_toEndOf="@+id/editText_add_time"
+            app:layout_constraintStart_toStartOf="@+id/editText_add_time"
+            app:layout_constraintTop_toBottomOf="@+id/editText_add_time" />
 
     <TextView
         android:id="@+id/textView10"
@@ -214,16 +220,17 @@
         app:layout_constraintStart_toStartOf="@+id/textView20"
         app:layout_constraintTop_toBottomOf="@+id/textView20" />
 
-    <EditText
-        android:id="@+id/editText_rideSharees"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:ems="5"
-        android:hint="@string/no_needed"
-        android:inputType="number"
-        app:layout_constraintEnd_toEndOf="@+id/editText_add_cash"
-        app:layout_constraintTop_toBottomOf="@+id/editText_add_cash" />
+        <EditText
+            android:id="@+id/editText_rideSharees"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:ems="5"
+            android:hint="@string/no_needed"
+            android:inputType="number"
+            android:textColor="#ECDEDE"
+            app:layout_constraintEnd_toEndOf="@+id/editText_add_cash"
+            app:layout_constraintTop_toBottomOf="@+id/editText_add_cash" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>

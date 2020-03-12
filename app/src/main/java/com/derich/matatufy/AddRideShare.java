@@ -39,6 +39,8 @@ public class AddRideShare extends AppCompatActivity {
     private FirebaseUser mUser;
     private int selMin;
     private int selHour;
+    private String name,date,from,destination,time,fare,ridesharees,model,phone,email;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +56,29 @@ public class AddRideShare extends AppCompatActivity {
         et_to = findViewById(R.id.editText_add_to);
         et_time = findViewById(R.id.editText_add_time);
         et_cash = findViewById(R.id.editText_add_cash);
+        Intent share =getIntent();
+        name = share.getStringExtra("RidesharerName");
+        date = share.getStringExtra("RidesharerDate");
+        from = share.getStringExtra("RidesharerFrom");
+        destination = share.getStringExtra("RidesharerDestination");
+        time = share.getStringExtra("RidesharerTime");
+        fare = share.getStringExtra("RidesharerAmount");
+        ridesharees = share.getStringExtra("RidesharerSharees");
+        model = share.getStringExtra("RidesharerModel");
+        phone = share.getStringExtra("RidesharerPhone");
+        if (date!=null){
+            et_name.setText(name);
+            et_rideSharee.setText(ridesharees);
+            et_model.setText(model);
+            et_phone.setText(phone);
+            et_date.setText(date);
+            et_date.setClickable(false);
+            et_from.setText(from);
+            et_to.setText(destination);
+            et_time.setText(time);
+            et_cash.setText(fare);
+            et_cash.setClickable(false);
+        }
         et_time.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

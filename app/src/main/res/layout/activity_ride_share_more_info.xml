@@ -105,7 +105,8 @@
             android:text="@string/name"
             android:textStyle="bold|italic"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textViewRSMIName"
+            app:layout_constraintHorizontal_bias="0.15"
+            app:layout_constraintStart_toEndOf="@+id/textViewRSMIRidesharees"
             app:layout_constraintTop_toTopOf="@+id/textViewRSMIName" />
 
         <TextView
@@ -189,13 +190,14 @@
             android:id="@+id/imageButtonCallRidesharer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginStart="8dp"
             android:foregroundGravity="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/textViewRSMIRidesharees"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewRSMIRidesharees"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/imageButtonDeleteRideshare"
+            app:layout_constraintTop_toTopOf="@+id/imageButtonDeleteRideshare"
+            app:layout_constraintVertical_bias="0.0"
             app:srcCompat="@drawable/ic_call_black_24dp" />
 
         <ImageButton
@@ -207,6 +209,53 @@
             app:layout_constraintStart_toEndOf="@+id/imageButtonCallRidesharer"
             app:layout_constraintTop_toTopOf="@+id/imageButtonCallRidesharer"
             app:srcCompat="@drawable/ic_message_black_24dp" />
+
+        <Button
+            android:id="@+id/button_bookride"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Book ride"
+            android:textColor="#100F0F"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/imageButtonMessageRidesharer"
+            app:layout_constraintTop_toTopOf="@+id/imageButtonMessageRidesharer" />
+
+        <ImageButton
+            android:id="@+id/imageButton_edit_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="@+id/textViewRSMIRidesharees"
+            app:layout_constraintHorizontal_bias="0.11"
+            app:layout_constraintStart_toStartOf="@+id/textViewRSMIRidesharees"
+            app:layout_constraintTop_toBottomOf="@+id/textViewRSMIRidesharees"
+            app:srcCompat="@drawable/ic_edit_info" />
+
+        <ImageButton
+            android:id="@+id/imageButtonDeleteRideshare"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:tint="#0B0808"
+            app:layout_constraintBottom_toBottomOf="@+id/imageButton_edit_details"
+            app:layout_constraintStart_toEndOf="@+id/imageButton_edit_details"
+            app:layout_constraintTop_toTopOf="@+id/imageButton_edit_details"
+            app:srcCompat="@android:drawable/ic_menu_delete" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvRequests"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageButtonDeleteRideshare"
+            app:layout_constraintVertical_bias="0.0"
+            tools:listitem="@layout/list_requests" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

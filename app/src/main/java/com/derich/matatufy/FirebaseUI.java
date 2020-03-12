@@ -71,7 +71,7 @@ public class FirebaseUI extends AppCompatActivity {
     public void themeAndLogo() {
         List<AuthUI.IdpConfig> providers = Arrays.asList(
                 new AuthUI.IdpConfig.EmailBuilder().build(),
-                new AuthUI.IdpConfig.PhoneBuilder().build(),
+               // new AuthUI.IdpConfig.PhoneBuilder().build(),
                 new AuthUI.IdpConfig.GoogleBuilder().build());
         // [START auth_fui_theme_logo]
         startActivityForResult(

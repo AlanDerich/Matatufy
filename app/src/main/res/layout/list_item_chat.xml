@@ -34,7 +34,7 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="Date sent." />
+                tools:text="Date received." />
 
             <TextView
                 android:id="@+id/textview_chat_received"
@@ -46,13 +46,13 @@
                 android:paddingTop="8dp"
                 android:paddingEnd="8dp"
                 android:paddingBottom="8dp"
+                android:text="This is a received message keep the text going so we can see"
                 android:textColor="@android:color/white"
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textview_chat_received_date"
-                tools:text="This is a sent message keep the text going so we can see" />
+                app:layout_constraintTop_toBottomOf="@+id/textview_chat_received_date" />
 
             <TextView
                 android:id="@+id/textview_chat_sent_date"
@@ -66,10 +66,8 @@
                 android:paddingBottom="8dp"
                 android:textColor="@android:color/black"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textview_chat_received"
-                tools:text="Date received" />
+                tools:text="Date sent" />
 
             <TextView
                 android:id="@+id/textview_chat_sent"
@@ -82,13 +80,27 @@
                 android:paddingTop="8dp"
                 android:paddingEnd="24dp"
                 android:paddingBottom="8dp"
+                android:text="This is a sent message keep the text going so we can see"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textview_chat_sent_date"
-                tools:text="This is a received message keep the text going so we can see" />
+                app:layout_constraintTop_toBottomOf="@+id/textview_chat_sent_date" />
+
+            <TextView
+                android:id="@+id/tvSenderUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="Sender"
+                android:textColor="#221515"
+                app:layout_constraintBottom_toBottomOf="@+id/textview_chat_received_date"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/textview_chat_received_date"
+                app:layout_constraintTop_toTopOf="@+id/textview_chat_received_date" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 

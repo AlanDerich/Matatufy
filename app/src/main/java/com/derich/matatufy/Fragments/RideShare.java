@@ -70,10 +70,10 @@ public class RideShare extends Fragment implements RideShareAdapter.OnRideClickL
         mSpinnerDate = new ArrayList<>();
         mSpinnerFrom = new ArrayList<>();
         mSpinnerTo = new ArrayList<>();
-        mRecyclerView.setHasFixedSize(true);
         mApplyFrom= false;
         mApplyTo = false;
         mApplyDate = false;
+        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         user = FirebaseAuth.getInstance().getCurrentUser();
         if (user!=null) {
@@ -97,7 +97,7 @@ public class RideShare extends Fragment implements RideShareAdapter.OnRideClickL
             @Override
             public void onClick(View view) {
                 clearDefaults();
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.AlertDialogStyle);
                 builder.setTitle("Choose filters to apply.");
 
 // Add a checkbox list
@@ -181,14 +181,13 @@ public class RideShare extends Fragment implements RideShareAdapter.OnRideClickL
     public void fromToDateFilters(){
         ArrayAdapter<String> fromAdapter = new ArrayAdapter<>(
                 getContext(), android.R.layout.simple_spinner_item, mSpinnerFrom);
-        AlertDialog.Builder from = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder from = new AlertDialog.Builder(getContext(),R.style.AlertDialogStyle);
         from.setTitle("From");
         //  String[] types = {"By Zip", "By Category"};
         from.setAdapter(fromAdapter, new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                int dee = mSpinnerFrom.size();
                 mFrom = mSpinnerFrom.get(which);
                 tvFilters.setText("Tap to change filters");
                 dialog.dismiss();
@@ -201,7 +200,7 @@ public class RideShare extends Fragment implements RideShareAdapter.OnRideClickL
         from.show();
         ArrayAdapter<String> toAdapter = new ArrayAdapter<>(
                 getContext(), android.R.layout.simple_spinner_item, mSpinnerTo);
-        AlertDialog.Builder to = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder to = new AlertDialog.Builder(getContext(),R.style.AlertDialogStyle);
         to.setTitle("Destination");
         to.setAdapter(toAdapter, new DialogInterface.OnClickListener() {
 
@@ -218,7 +217,7 @@ public class RideShare extends Fragment implements RideShareAdapter.OnRideClickL
         to.show();
         ArrayAdapter<String> dateAdapter = new ArrayAdapter<>(
                 getContext(), android.R.layout.simple_spinner_item, mSpinnerDate);
-        AlertDialog.Builder date = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder date = new AlertDialog.Builder(getContext(),R.style.AlertDialogStyle);
         date.setTitle("Date");
         date.setAdapter(dateAdapter, new DialogInterface.OnClickListener() {
 
@@ -237,7 +236,7 @@ public class RideShare extends Fragment implements RideShareAdapter.OnRideClickL
     private void fromToFilters(){
         ArrayAdapter<String> fromAdapter = new ArrayAdapter<>(
                 getContext(), android.R.layout.simple_spinner_item, mSpinnerFrom);
-        AlertDialog.Builder from = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder from = new AlertDialog.Builder(getContext(),R.style.AlertDialogStyle);
         from.setTitle("From");
         //  String[] types = {"By Zip", "By Category"};
         from.setAdapter(fromAdapter, new DialogInterface.OnClickListener() {
@@ -257,7 +256,7 @@ public class RideShare extends Fragment implements RideShareAdapter.OnRideClickL
         from.show();
         ArrayAdapter<String> toAdapter = new ArrayAdapter<>(
                 getContext(), android.R.layout.simple_spinner_item, mSpinnerTo);
-        AlertDialog.Builder to = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder to = new AlertDialog.Builder(getContext(),R.style.AlertDialogStyle);
         to.setTitle("Destination");
         to.setAdapter(toAdapter, new DialogInterface.OnClickListener() {
 
@@ -279,14 +278,13 @@ public class RideShare extends Fragment implements RideShareAdapter.OnRideClickL
     private void fromDateFilters(){
         ArrayAdapter<String> fromAdapter = new ArrayAdapter<>(
                 getContext(), android.R.layout.simple_spinner_item, mSpinnerFrom);
-        AlertDialog.Builder from = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder from = new AlertDialog.Builder(getContext(),R.style.AlertDialogStyle);
         from.setTitle("From");
         //  String[] types = {"By Zip", "By Category"};
         from.setAdapter(fromAdapter, new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                int dee = mSpinnerFrom.size();
                 mFrom = mSpinnerFrom.get(which);
                 tvFilters.setText("Tap to change filters");
                 dialog.dismiss();
@@ -299,7 +297,7 @@ public class RideShare extends Fragment implements RideShareAdapter.OnRideClickL
         from.show();
         ArrayAdapter<String> dateAdapter = new ArrayAdapter<>(
                 getContext(), android.R.layout.simple_spinner_item, mSpinnerDate);
-        AlertDialog.Builder date = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder date = new AlertDialog.Builder(getContext(),R.style.AlertDialogStyle);
         date.setTitle("Date");
         date.setAdapter(dateAdapter, new DialogInterface.OnClickListener() {
 
@@ -321,7 +319,7 @@ public class RideShare extends Fragment implements RideShareAdapter.OnRideClickL
 
         ArrayAdapter<String> toAdapter = new ArrayAdapter<>(
                 getContext(), android.R.layout.simple_spinner_item, mSpinnerTo);
-        AlertDialog.Builder to = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder to = new AlertDialog.Builder(getContext(),R.style.AlertDialogStyle);
         to.setTitle("Destination");
         to.setAdapter(toAdapter, new DialogInterface.OnClickListener() {
 
@@ -338,7 +336,7 @@ public class RideShare extends Fragment implements RideShareAdapter.OnRideClickL
         to.show();
         ArrayAdapter<String> dateAdapter = new ArrayAdapter<>(
                 getContext(), android.R.layout.simple_spinner_item, mSpinnerDate);
-        AlertDialog.Builder date = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder date = new AlertDialog.Builder(getContext(),R.style.AlertDialogStyle);
         date.setTitle("Date");
         date.setAdapter(dateAdapter, new DialogInterface.OnClickListener() {
 
@@ -359,7 +357,7 @@ public class RideShare extends Fragment implements RideShareAdapter.OnRideClickL
     private void fromFilters(){
         ArrayAdapter<String> fromAdapter = new ArrayAdapter<>(
                 getContext(), android.R.layout.simple_spinner_item, mSpinnerFrom);
-        AlertDialog.Builder from = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder from = new AlertDialog.Builder(getContext(),R.style.AlertDialogStyle);
         from.setTitle("From");
         //  String[] types = {"By Zip", "By Category"};
         from.setAdapter(fromAdapter, new DialogInterface.OnClickListener() {
@@ -383,7 +381,7 @@ public class RideShare extends Fragment implements RideShareAdapter.OnRideClickL
     private void toFilters(){
         ArrayAdapter<String> toAdapter = new ArrayAdapter<>(
                 getContext(), android.R.layout.simple_spinner_item, mSpinnerTo);
-        AlertDialog.Builder to = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder to = new AlertDialog.Builder(getContext(),R.style.AlertDialogStyle);
         to.setTitle("Destination");
         to.setAdapter(toAdapter, new DialogInterface.OnClickListener() {
 
@@ -405,7 +403,7 @@ public class RideShare extends Fragment implements RideShareAdapter.OnRideClickL
     private void dateFilters(){
         ArrayAdapter<String> dateAdapter = new ArrayAdapter<>(
                 getContext(), android.R.layout.simple_spinner_item, mSpinnerDate);
-        AlertDialog.Builder date = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder date = new AlertDialog.Builder(getContext(),R.style.AlertDialogStyle);
         date.setTitle("Date");
         date.setAdapter(dateAdapter, new DialogInterface.OnClickListener() {
 
@@ -635,6 +633,7 @@ public class RideShare extends Fragment implements RideShareAdapter.OnRideClickL
 
     private void populate(){
         RideShareAdapter mRideShareAdapter = new RideShareAdapter(mRideshareInfo,this);
+        mRideShareAdapter.setHasStableIds(true);
         mRideShareAdapter.notifyDataSetChanged();
         mRecyclerView.setAdapter(mRideShareAdapter);
 

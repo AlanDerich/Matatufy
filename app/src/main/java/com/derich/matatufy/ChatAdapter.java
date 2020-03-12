@@ -14,10 +14,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,6 +31,17 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>  {
         this.onChatClickListener = onChatClickListener;
         this.chatsList = chatsList;
     }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
     @NonNull
     @Override
     public ChatAdapter.ViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
@@ -42,6 +51,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>  {
     }
     @Override
     public void onBindViewHolder(@NonNull ChatAdapter.ViewHolder holder, int position) {
+       // holder.setIsRecyclable(false);
         Chats rI = chatsList.get(position);
         String email = rI.getUserEmail();
         FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -62,14 +72,11 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>  {
         Date date = tStamp.toDate();
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy HH:mm");
         String dated = sdf.format(date);
-        if (email == null || email.isEmpty()){
-            holder.from.setVisibility(View.GONE);
-            holder.to.setVisibility(View.GONE);
-        }
-        else {
+
             if (!(email.equals(mUser.getEmail()))) {
                 holder.from.setText(rI.getMessage());
                 holder.from_date.setText(dated);
+                holder.sender.setText(rI.getUserEmail());
                 holder.to.setVisibility(View.GONE);
                 holder.to_date.setVisibility(View.GONE);
             } else {
@@ -77,8 +84,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>  {
                 holder.to_date.setText(dated);
                 holder.from.setVisibility(View.GONE);
                 holder.from_date.setVisibility(View.GONE);
+                holder.sender.setVisibility(View.GONE);
             }
-        }
     }
     @Override
     public int getItemCount() {
@@ -91,7 +98,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>  {
         return coOrdns.replace("nanoseconds=","");
     }
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        private TextView from,to,from_date,to_date;
+        private TextView from,to,from_date,to_date,sender;
         ChatAdapter.OnChatClickListener onChatClickListener;
         public ViewHolder(View itemView, ChatAdapter.OnChatClickListener onChatClickListener) {
             super(itemView);
@@ -99,6 +106,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>  {
             from= itemView.findViewById(R.id.textview_chat_received);
             from_date= itemView.findViewById(R.id.textview_chat_received_date);
             to= itemView.findViewById(R.id.textview_chat_sent);
+            sender = itemView.findViewById(R.id.tvSenderUsername);
             to_date= itemView.findViewById(R.id.textview_chat_sent_date);
             itemView.setOnClickListener(this);
         }

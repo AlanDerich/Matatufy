@@ -25,7 +25,7 @@ import java.util.List;
 public class AddStage extends AppCompatActivity {
     private static final String TAG = "";
     private TextView coOrd;
-private EditText etFare,etDestination,etName;
+private EditText etFare,etDestination,etName,etFrom;
 private Spinner spDays,spOpening,spClosing;
 private String mLats;
 private String mLongs;
@@ -38,6 +38,7 @@ private String mLongs;
         etFare = findViewById(R.id.editTextFare);
         etDestination = findViewById(R.id.editTextDestination);
         etName = findViewById(R.id.editTextName);
+        etFrom = findViewById(R.id.editTextCityFrom);
         spDays = findViewById(R.id.spinnerDays);
         spOpening = findViewById(R.id.spinnerOpening);
         spClosing = findViewById(R.id.spinnerClosing);
@@ -94,7 +95,8 @@ private String mLongs;
          String openingT= spOpening.getSelectedItem().toString();
          String closingT = spClosing.getSelectedItem().toString();
          String days = spDays.getSelectedItem().toString();
-        MarkerInfo markerInfo = new MarkerInfo(longitude,latitude,sName,destination,price,openingT,closingT,days);
+         String from = etFrom.getText().toString().trim();
+        MarkerInfo markerInfo = new MarkerInfo(longitude,latitude,sName,destination,price,openingT,closingT,days,from);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("stages").document(encode(latitude)+ ":" + encode(longitude)).collection("allstages").document(destination)
                 .set(markerInfo)

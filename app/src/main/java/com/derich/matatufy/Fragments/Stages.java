@@ -16,13 +16,18 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.InputType;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +44,7 @@ import com.derich.matatufy.BoundLocationManager;
 import com.derich.matatufy.FirebaseUI;
 import com.derich.matatufy.MarkerInfo;
 import com.derich.matatufy.R;
+import com.derich.matatufy.RideShareInfo;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -77,13 +83,8 @@ import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 public class Stages extends Fragment implements LifecycleOwner {
     private GoogleMap mMap;
     private FirebaseUser mUser;
-    LifecycleOwner lifecycleOwner;
-
-    // The entry point to the Fused Location Provider.
+   // LifecycleOwner lifecycleOwner;
     private FusedLocationProviderClient mFusedLocationProviderClient;
-
-    // A default location (Sydney, Australia) and default zoom to use when location permission is
-    // not granted.
     private final LatLng mDefaultLocation = new LatLng(0.5143, 35.2698);
     private static final int DEFAULT_ZOOM = 15;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
@@ -99,6 +100,7 @@ public class Stages extends Fragment implements LifecycleOwner {
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
     private Location mLastKnownLocation;
+    private TextView tvFilters;
     private Context mContext;
     private boolean mStoragePermissionGranted;
     private String longitude;
@@ -106,10 +108,15 @@ public class Stages extends Fragment implements LifecycleOwner {
     private Boolean open;
     private List<MarkerInfo> stagesList;
     private String openDays;
+    private String from;
     private String closingTime;
     private String openingTime;
     private String saccoName;
-    private Context context;
+    private boolean destinationFilter;
+    private boolean fromFilter;
+    private boolean saccoFilter;
+    private boolean fareFilter;
+    private QuerySnapshot querySnapshot;
 
     public Stages() {
         // Required empty public constructor
@@ -126,12 +133,11 @@ public class Stages extends Fragment implements LifecycleOwner {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_maps, container, false);
-        getLocationPermission();
-        bindLocationListener();
-        DevicePermission();
         mContext = getContext();
+        getLocationPermission();
+        DevicePermission();
         open = false;
-        context = getContext();
+        tvFilters = rootView.findViewById(R.id.filters);
         mUser = FirebaseAuth.getInstance().getCurrentUser();
         if (savedInstanceState != null) {
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
@@ -140,18 +146,17 @@ public class Stages extends Fragment implements LifecycleOwner {
 
         // Construct a FusedLocationProviderClient.
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
-        getDeviceLocation();
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);  //use SuppoprtMapFragment for using in fragment instead of activity  MapFragment = activity   SupportMapFragment = fragment
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(final GoogleMap map) {
                 mMap = map;
+                getDeviceLocation();
                 mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
                 mMap.getUiSettings().setZoomControlsEnabled(true);
                 mMap.getUiSettings().setZoomGesturesEnabled(true);
                 mMap.getUiSettings().setCompassEnabled(true);
                 updateLocationUI();
-                // Get the current location of the device and set the position of the map.
                 final FirebaseFirestore db = FirebaseFirestore.getInstance();
                getLocations();
 
@@ -169,14 +174,16 @@ public class Stages extends Fragment implements LifecycleOwner {
                         info.setOrientation(LinearLayout.VERTICAL);
 
                         TextView title = new TextView(mContext);
-                        title.setTextColor(Color.BLACK);
+                        title.setTextColor(Color.parseColor("#0BF5AB"));
+                        SpannableString spanTitle = new SpannableString(marker.getTitle());
+                        spanTitle.setSpan(new UnderlineSpan(),0,spanTitle.length(),0);
                         title.setGravity(Gravity.CENTER);
                         title.setTypeface(null, Typeface.BOLD);
                         title.setTextSize(22);
-                        title.setText(marker.getTitle());
+                        title.setText(spanTitle);
 
                         TextView snippet = new TextView(mContext);
-                        snippet.setTextColor(Color.GRAY);
+                        snippet.setTextColor(Color.WHITE);
                         snippet.setTypeface(null,Typeface.BOLD);
                         snippet.setTextSize(20);
                         snippet.setText(marker.getSnippet());
@@ -192,7 +199,6 @@ public class Stages extends Fragment implements LifecycleOwner {
                     @Override
                     public void onMapClick(final LatLng latLng) {
                         if (mUser!=null){
-                        if (!(mUser.getEmail().isEmpty())){
                             if (mUser.getEmail().equals("alangitonga15@gmail.com") || mUser.getEmail().equals("mwanjirug25@gmail.com")){
                                 MarkerOptions markerOptions= new MarkerOptions();
                                 markerOptions.position(latLng);
@@ -203,7 +209,7 @@ public class Stages extends Fragment implements LifecycleOwner {
                                  mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                             @Override
                             public boolean onMarkerClick(Marker marker) {
-                                final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                                final AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.AlertDialogStyle);
                                 builder.setTitle("Confirmation.")
                                         .setMessage("Are you sure you want to add a new stage to this location?")
                                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -234,7 +240,6 @@ public class Stages extends Fragment implements LifecycleOwner {
                         });
                         }
                     }
-                    }
                         else {
                             Toast.makeText(getContext(),"Please login to continue",Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(getContext(), FirebaseUI.class));
@@ -263,9 +268,9 @@ public class Stages extends Fragment implements LifecycleOwner {
                         LatLng markerPos = marker.getPosition();
                         latitude = String.valueOf(markerPos.latitude);
                         longitude = String.valueOf(markerPos.longitude);
-                        if (!(mUser.getEmail().isEmpty())){
+                        if (mUser!=null){
                             if (mUser.getEmail().equals("alangitonga15@gmail.com") || mUser.getEmail().equals("mwanjirug25@gmail.com")){
-                                final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                                final AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.AlertDialogStyle);
                                 builder.setTitle("Choose an action");
                                 String[] options = {"Add New Destination","Delete destination","Edit destination info","View destinations info"};
                                 builder.setItems(options, new DialogInterface.OnClickListener() {
@@ -287,7 +292,7 @@ public class Stages extends Fragment implements LifecycleOwner {
                                                                     final List<String> destns = new ArrayList<>();
                                                                   for (QueryDocumentSnapshot doc: task.getResult())
                                                                       destns.add(doc.getId());
-                                                                  AlertDialog.Builder builderDestns = new AlertDialog.Builder(getContext());
+                                                                  AlertDialog.Builder builderDestns = new AlertDialog.Builder(getContext(),R.style.AlertDialogStyle);
                                                                   builderDestns.setTitle("Destinations on the stage");
                                                                   String[] listDestns = destns.toArray(new String[destns.size()]);
                                                                   builderDestns.setItems(listDestns, new DialogInterface.OnClickListener() {
@@ -342,6 +347,143 @@ public class Stages extends Fragment implements LifecycleOwner {
 
             }
         });
+        tvFilters.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<MarkerInfo> stageInfo = new ArrayList<>();
+                MarkerInfo markerInfo;
+                List<String> spinnerFrom =  new ArrayList<>();
+                List<String> spinnerDestn =  new ArrayList<>();
+                List<String> spinnerSacco =  new ArrayList<>();
+                spinnerFrom.add("* From");
+                spinnerDestn.add("* Destination");
+                spinnerSacco.add("Sacco name");
+                if (!querySnapshot.isEmpty()) {
+                    for (DocumentSnapshot snapshot : querySnapshot)
+                        stageInfo.add(snapshot.toObject(MarkerInfo.class));
+                    int size = stageInfo.size();
+                    int position=0;
+                    for (position=0;position<size;position++){
+                        markerInfo= stageInfo.get(position);
+                        spinnerFrom.add(markerInfo.from);
+                        spinnerDestn.add(markerInfo.destination);
+                        spinnerSacco.add(markerInfo.sName);
+                    }
+
+                } else {
+                    Toast.makeText(getContext(),"No data found.",Toast.LENGTH_LONG).show();
+                }
+                AlertDialog.Builder dialog = new AlertDialog.Builder(getContext(),R.style.AlertDialogStyle);
+                Context context = getContext();
+                LinearLayout layout = new LinearLayout(context);
+                layout.setOrientation(LinearLayout.VERTICAL);
+                final Spinner fromBox = new Spinner(context);
+                final Spinner destinationBox = new Spinner(context);
+                final Spinner saccoBox = new Spinner(context);
+                ArrayAdapter<String> fromAdapter = new ArrayAdapter<>(mContext,R.layout.my_spinner_item,spinnerFrom);
+                ArrayAdapter<String> toAdapter = new ArrayAdapter<>(mContext,R.layout.my_spinner_item,spinnerDestn);
+                ArrayAdapter<String> saccoAdapter = new ArrayAdapter<>(mContext,R.layout.my_spinner_item,spinnerSacco);
+                fromAdapter.setDropDownViewResource(R.layout.my_spinner_item);
+                toAdapter.setDropDownViewResource(R.layout.my_spinner_item);
+                saccoAdapter.setDropDownViewResource(R.layout.my_spinner_item);
+                fromBox.setAdapter(fromAdapter);
+                destinationBox.setAdapter(toAdapter);
+                saccoBox.setAdapter(saccoAdapter);
+                final EditText fareBox = new EditText(context);
+                fareBox.setInputType(InputType.TYPE_CLASS_NUMBER);
+                fareBox.setHint("Fare");
+                final TextView mandatory = new TextView(context);
+                mandatory.setText("* fields are mandatory");
+                layout.addView(fromBox);
+                layout.addView(destinationBox);
+                layout.addView(saccoBox);
+                layout.addView(fareBox);
+                layout.addView(mandatory);
+                dialog.setTitle("Filters")
+                .setPositiveButton("Apply", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+                        String from = fromBox.getSelectedItem().toString();
+                        String destn= destinationBox.getSelectedItem().toString();
+                        String sacco= saccoBox.getSelectedItem().toString();
+                        String fare = fareBox.getText().toString();
+                        if (from.equals("* From") || destn.equals("* Destination")){
+                            Toast.makeText(mContext,"Sorry from and destination fields cannot be empty",Toast.LENGTH_LONG).show();
+                        }
+                        else {
+                            if (!(sacco.equals("Sacco name")) && !(fare.isEmpty())){
+                                db.collectionGroup("allstages").whereEqualTo("from",from).whereEqualTo("destination",destn).whereEqualTo("sName",sacco).whereEqualTo("price",fare).get()
+                                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                                queryDocSnapShotMethod(queryDocumentSnapshots);
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Toast.makeText(getContext(),"Something went terribly wrong." + e,Toast.LENGTH_LONG).show();
+                                            }
+                                        });
+                            }
+                            else if (sacco.equals("Sacco name") && !(fare.isEmpty())){
+                                db.collectionGroup("allstages").whereEqualTo("from",from).whereEqualTo("destination",destn).whereEqualTo("price",fare).get()
+                                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                                queryDocSnapShotMethod(queryDocumentSnapshots);
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Toast.makeText(getContext(),"Something went terribly wrong." + e,Toast.LENGTH_LONG).show();
+                                            }
+                                        });
+
+                            }
+                            else if(fare.isEmpty() && !(sacco.equals("Sacco name"))){
+                                db.collectionGroup("allstages").whereEqualTo("from",from).whereEqualTo("destination",destn).whereEqualTo("sName",sacco).get()
+                                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                                queryDocSnapShotMethod(queryDocumentSnapshots);
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Toast.makeText(getContext(),"Something went terribly wrong." + e,Toast.LENGTH_LONG).show();
+                                            }
+                                        });
+
+                            }
+                            else{
+                                db.collectionGroup("allstages").whereEqualTo("from",from).whereEqualTo("destination",destn).get()
+                                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                                queryDocSnapShotMethod(queryDocumentSnapshots);
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Toast.makeText(getContext(),"Something went terribly wrong." + e,Toast.LENGTH_LONG).show();
+                                            }
+                                        });
+
+                            }
+                        }
+                    }
+                })
+                .setNegativeButton("Cancel", null);
+                dialog.setView(layout);
+                dialog.show();
+
+            }
+        });
 
         return rootView;
     }
@@ -360,13 +502,10 @@ public class Stages extends Fragment implements LifecycleOwner {
                 for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
                     switch (dc.getType()) {
                         case ADDED:
-                            queryDocSnapShotMethod(queryDocumentSnapshots);
-                            break;
                         case MODIFIED:
-                            queryDocSnapShotMethod(queryDocumentSnapshots);
-                            break;
                         case REMOVED:
                             queryDocSnapShotMethod(queryDocumentSnapshots);
+                            querySnapshot = queryDocumentSnapshots;
                             break;
                     }
                 }
@@ -399,7 +538,7 @@ public class Stages extends Fragment implements LifecycleOwner {
                     else {
                         mMap.addMarker(new MarkerOptions()
                                 .position(new LatLng(Double.parseDouble(previous.latitude),Double.parseDouble(previous.longitude)))
-                                .icon(bitmapDescriptorFromVector(context,R.drawable.ic_local_taxi_black_24dp))
+                                .icon(bitmapDescriptorFromVector(mContext,R.drawable.ic_local_taxi_black_24dp))
                                 .title(previous.sName)
                                 .snippet(snip)
                         );
@@ -415,17 +554,21 @@ public class Stages extends Fragment implements LifecycleOwner {
                 MarkerInfo previous = stagesList.get(position-1);
                 mMap.addMarker(new MarkerOptions()
                         .position(new LatLng(Double.parseDouble(previous.latitude),Double.parseDouble(previous.longitude)))
-                        .icon(bitmapDescriptorFromVector(context,R.drawable.ic_local_taxi_black_24dp))
+                        .icon(bitmapDescriptorFromVector(mContext,R.drawable.ic_local_taxi_black_24dp))
                         .title(previous.sName)
                         .snippet(snip)
                 );
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                        new LatLng(Double.parseDouble(previous.latitude),
+                                Double.parseDouble(previous.longitude)), DEFAULT_ZOOM));
+
             }
         }
     }
 
 
     private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
-        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
+        Drawable vectorDrawable = ContextCompat.getDrawable(mContext, vectorResId);
         vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
         Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
@@ -479,6 +622,9 @@ public class Stages extends Fragment implements LifecycleOwner {
                     mLocationPermissionGranted = true;
                     bindLocationListener();
                 }
+                else {
+                    Toast.makeText(mContext,"Location permission denied",Toast.LENGTH_LONG).show();
+                }
             }
             case PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
             {
@@ -486,12 +632,15 @@ public class Stages extends Fragment implements LifecycleOwner {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     mStoragePermissionGranted = true;
                 }
+                else {
+                    DevicePermission();
+                }
             }
         }
         updateLocationUI();
     }
     private void displayStageInfo(){
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.AlertDialogStyle);
         int size = stagesList.size();
 
         int position=0;
@@ -503,8 +652,10 @@ public class Stages extends Fragment implements LifecycleOwner {
             if (markerCurrentPos.equals(markerCurrentPosition)) {
                 saccoName = "Sacco name : " +markerInfo.sName;
                 openingTime = "Opening time : "+markerInfo.openingT;
+                from = "From : " + markerInfo.from;
                 closingTime = "Closing time : "+markerInfo.closingT;
                 openDays = "Open days : " +markerInfo.days + "\n";
+
                 arrayList.add("Destination : "+markerInfo.destination);
                 arrayList.add("Fare : " + markerInfo.price);
                 arrayList.add("\n");
@@ -514,7 +665,7 @@ public class Stages extends Fragment implements LifecycleOwner {
                 builder.setAdapter(aa1, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        AlertDialog.Builder builderSelect = new AlertDialog.Builder(getContext());
+                        AlertDialog.Builder builderSelect = new AlertDialog.Builder(getContext(),R.style.AlertDialogStyle);
                         builderSelect.setTitle("Directions");
                         builderSelect.setMessage("Do you want to get the directions to the stage from your location?");
                         builderSelect.setCancelable(false);
@@ -542,6 +693,7 @@ public class Stages extends Fragment implements LifecycleOwner {
         }
         arrayList.add(saccoName);
         arrayList.add(openingTime);
+        arrayList.add(from);
         arrayList.add(closingTime);
         arrayList.add(openDays);
         AlertDialog dialog1 = builder.create();
@@ -553,11 +705,19 @@ public class Stages extends Fragment implements LifecycleOwner {
          * device. The result of the permission request is handled by a callback,
          * onRequestPermissionsResult.
          */
-        if (ContextCompat.checkSelfPermission(this.getContext(),
+        if (ContextCompat.checkSelfPermission(mContext,
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mLocationPermissionGranted = true;
-        } else {
+            bindLocationListener();
+        }
+        else if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)){
+            Toast.makeText(mContext,"The app needs this permission to show you stages around you.",Toast.LENGTH_SHORT).show();
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        }
+        else {
             ActivityCompat.requestPermissions(getActivity(),
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
@@ -569,11 +729,18 @@ public class Stages extends Fragment implements LifecycleOwner {
          * device. The result of the permission request is handled by a callback,
          * onRequestPermissionsResult.
          */
-        if (ContextCompat.checkSelfPermission(this.getContext(),
+        if (ContextCompat.checkSelfPermission(mContext,
                 Manifest.permission.READ_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED) {
             mStoragePermissionGranted = true;
-        } else {
+        }
+        else if(ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE)){
+            Toast.makeText(mContext,"The app needs this permission to upload your profile image.",Toast.LENGTH_SHORT).show();
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
+                    PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+        }
+        else {
             ActivityCompat.requestPermissions(getActivity(),
                     new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
                     PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
@@ -599,7 +766,6 @@ public class Stages extends Fragment implements LifecycleOwner {
                 mMap.setMyLocationEnabled(false);
                 mMap.getUiSettings().setMyLocationButtonEnabled(false);
                 mLastKnownLocation = null;
-                getLocationPermission();
             }
         } catch (SecurityException e)  {
             Log.e("Exception: %s", e.getMessage());

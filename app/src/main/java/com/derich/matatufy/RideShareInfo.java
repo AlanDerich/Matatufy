@@ -9,6 +9,15 @@ public class RideShareInfo {
     public String destination;
     public String time;
     public String amount;
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String rideSharee;
     public String email;
 

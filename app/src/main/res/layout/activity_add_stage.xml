@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".AddStage">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/textView2"
@@ -14,6 +17,7 @@
         android:layout_marginTop="16dp"
         android:text="Coordinates :"
         android:textSize="18sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -33,22 +37,24 @@
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="32dp"
         android:text="Sacco Name :"
         android:textSize="18sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/textView2"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        app:layout_constraintTop_toBottomOf="@+id/textView11" />
 
-    <EditText
-        android:id="@+id/editTextName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:ems="8"
-        android:hint="Sacco name"
-        android:inputType="textPersonName"
-        app:layout_constraintStart_toStartOf="@+id/textViewCoord"
-        app:layout_constraintTop_toBottomOf="@+id/textViewCoord" />
+        <EditText
+            android:id="@+id/editTextName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:ems="8"
+            android:hint="Sacco name"
+            android:inputType="textPersonName"
+            android:textColor="#F6F6F6"
+            app:layout_constraintStart_toStartOf="@+id/textViewCoord"
+            app:layout_constraintTop_toBottomOf="@+id/editTextCityFrom" />
 
     <TextView
         android:id="@+id/textView5"
@@ -57,19 +63,21 @@
         android:layout_marginTop="32dp"
         android:text="Destination :"
         android:textSize="18sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/textView4"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
-    <EditText
-        android:id="@+id/editTextDestination"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:ems="8"
-        android:hint="Destination"
-        android:inputType="textPersonName"
-        app:layout_constraintStart_toStartOf="@+id/editTextName"
-        app:layout_constraintTop_toBottomOf="@+id/editTextName" />
+        <EditText
+            android:id="@+id/editTextDestination"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:ems="8"
+            android:hint="Destination"
+            android:inputType="textPersonName"
+            android:textColor="#F4EEEE"
+            app:layout_constraintStart_toStartOf="@+id/editTextName"
+            app:layout_constraintTop_toBottomOf="@+id/editTextName" />
 
     <TextView
         android:id="@+id/textView6"
@@ -78,19 +86,21 @@
         android:layout_marginTop="28dp"
         android:text="Fare : "
         android:textSize="18sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/textView5"
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
-    <EditText
-        android:id="@+id/editTextFare"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:ems="8"
-        android:hint="Fare in ksh"
-        android:inputType="numberDecimal"
-        app:layout_constraintStart_toStartOf="@+id/editTextDestination"
-        app:layout_constraintTop_toBottomOf="@+id/editTextDestination" />
+        <EditText
+            android:id="@+id/editTextFare"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:ems="8"
+            android:hint="Fare in ksh"
+            android:inputType="numberDecimal"
+            android:textColor="#FFFFFF"
+            app:layout_constraintStart_toStartOf="@+id/editTextDestination"
+            app:layout_constraintTop_toBottomOf="@+id/editTextDestination" />
 
     <TextView
         android:id="@+id/textView7"
@@ -99,6 +109,7 @@
         android:layout_marginTop="32dp"
         android:text="Opening time :"
         android:textSize="18sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/textView6"
         app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
@@ -117,6 +128,7 @@
         android:layout_marginTop="32dp"
         android:text="Closing time :"
         android:textSize="18sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/textView7"
         app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
@@ -135,6 +147,7 @@
         android:layout_marginTop="32dp"
         android:text="Operating days :"
         android:textSize="18sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/textView8"
         app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
@@ -146,4 +159,27 @@
         app:layout_constraintStart_toStartOf="@+id/spinnerClosing"
         app:layout_constraintTop_toBottomOf="@+id/spinnerClosing" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/textView11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="From : "
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/textView2"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+        <EditText
+            android:id="@+id/editTextCityFrom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:ems="8"
+            android:hint="City from"
+            android:inputType="textPersonName"
+            android:textColor="#FDFCFC"
+            app:layout_constraintStart_toStartOf="@+id/textViewCoord"
+            app:layout_constraintTop_toBottomOf="@+id/textViewCoord" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
