@@ -15,11 +15,11 @@ public class ActiveRideshares {
         this.time = time;
     }
 
-    Boolean status;
+    String status;
 public ActiveRideshares() {
 
 }
-    public ActiveRideshares(String rideSharerEmail, String rideShareeName, String rideShareDate,String time, String phone, Boolean status) {
+    public ActiveRideshares(String rideSharerEmail, String rideShareeName, String rideShareDate,String time, String phone, String status) {
         this.rideSharerEmail = rideSharerEmail;
         this.rideShareeName = rideShareeName;
         this.rideShareDate = rideShareDate;
@@ -28,11 +28,11 @@ public ActiveRideshares() {
         this.status = status;
     }
 
-    public Boolean getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Boolean status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 

@@ -195,7 +195,7 @@ private Button bookRide;
                             public void onClick(DialogInterface dialog, int which) {
                                 if (!(input.getText().toString().isEmpty())) {
                                     String phoneNum = input.getText().toString();
-                                    final ActiveRideshares activeRideshares = new ActiveRideshares(email, userEmail, date,time, phoneNum,false);
+                                    final ActiveRideshares activeRideshares = new ActiveRideshares(email, userEmail, date,time, phoneNum,"Pending");
                                     db.collection("bookRideshares").document("available requests").collection(email+encode(" "+date +" "+ time)).document(userEmail)
                                             .set(activeRideshares)
 
