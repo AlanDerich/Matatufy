@@ -117,6 +117,11 @@ public class Stages extends Fragment implements LifecycleOwner {
     private boolean saccoFilter;
     private boolean fareFilter;
     private QuerySnapshot querySnapshot;
+    private String extraSaccoName;
+    private String extraOpeningTime;
+    private String extraFrom;
+    private String extraClosingTime;
+    private String extraOpenDays;
 
     public Stages() {
         // Required empty public constructor
@@ -272,6 +277,7 @@ public class Stages extends Fragment implements LifecycleOwner {
                             if (mUser.getEmail().equals("alangitonga15@gmail.com") || mUser.getEmail().equals("mwanjirug25@gmail.com")){
                                 final AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.AlertDialogStyle);
                                 builder.setTitle("Choose an action");
+                                getStageInfo();
                                 String[] options = {"Add New Destination","Delete destination","Edit destination info","View destinations info"};
                                 builder.setItems(options, new DialogInterface.OnClickListener() {
                                     @Override
@@ -281,6 +287,11 @@ public class Stages extends Fragment implements LifecycleOwner {
                                                 Intent add= new Intent(getContext(),AddStage.class);
                                                 add.putExtra("latitude",latitude);
                                                 add.putExtra("longitude",longitude);
+                                                add.putExtra("from",extraFrom);
+                                                add.putExtra("sacco",extraSaccoName);
+                                                add.putExtra("open",extraOpeningTime);
+                                                add.putExtra("closing",extraClosingTime);
+                                                add.putExtra("openDays",extraOpenDays);
                                                 startActivity(add);
                                                 break;
                                             case 1:
@@ -362,7 +373,7 @@ public class Stages extends Fragment implements LifecycleOwner {
                     for (DocumentSnapshot snapshot : querySnapshot)
                         stageInfo.add(snapshot.toObject(MarkerInfo.class));
                     int size = stageInfo.size();
-                    int position=0;
+                    int position;
                     for (position=0;position<size;position++){
                         markerInfo= stageInfo.get(position);
                         spinnerFrom.add(markerInfo.from);
@@ -393,7 +404,7 @@ public class Stages extends Fragment implements LifecycleOwner {
                 fareBox.setInputType(InputType.TYPE_CLASS_NUMBER);
                 fareBox.setHint("Fare");
                 final TextView mandatory = new TextView(context);
-                mandatory.setText("* fields are mandatory");
+                mandatory.setText(R.string.mandatory);
                 layout.addView(fromBox);
                 layout.addView(destinationBox);
                 layout.addView(saccoBox);
@@ -639,11 +650,28 @@ public class Stages extends Fragment implements LifecycleOwner {
         }
         updateLocationUI();
     }
+    private void getStageInfo(){
+        int size = stagesList.size();
+        int position;
+        String markerCurrentPos = latitude + ":" + longitude;
+        for (position=0;position<size;position++) {
+            MarkerInfo markerInfo = stagesList.get(position);
+            String markerCurrentPosition = markerInfo.latitude + ":" + markerInfo.longitude;
+            if (markerCurrentPos.equals(markerCurrentPosition)) {
+                extraSaccoName = markerInfo.sName;
+                extraOpeningTime = markerInfo.openingT;
+                extraFrom = markerInfo.from;
+                extraClosingTime = markerInfo.closingT;
+                extraOpenDays = markerInfo.days;
+
+            }
+        }
+    }
     private void displayStageInfo(){
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.AlertDialogStyle);
         int size = stagesList.size();
 
-        int position=0;
+        int position;
         String markerCurrentPos = latitude + ":" + longitude;
         ArrayList<String> arrayList = new ArrayList<>();
         for (position=0;position<size;position++) {

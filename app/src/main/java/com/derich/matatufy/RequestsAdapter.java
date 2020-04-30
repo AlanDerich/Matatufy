@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
@@ -28,13 +29,36 @@ import static com.derich.matatufy.AddRideShare.encode;
 public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHolder> {
     private List<ActiveRideshares> requestList;
     private Context mContext;
+    private String name;
+    private String date;
+    private String from;
+    private String destination;
+    private String time;
+    private String fare;
+    private String ridesharees;
+    private String model;
+    private String phone;
+    private String email;
+    private String remainder;
     private RequestsAdapter.OnRequestClickListener onRequestClickListener;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+    private RideShareInfo mRideShareInfo;
 
-    public RequestsAdapter(List<ActiveRideshares> mActiveRideshares, RideShareMoreInfo rideShareMoreInfo) {
+    public RequestsAdapter(List<ActiveRideshares> mActiveRideshares, RideShareMoreInfo rideShareMoreInfo,String name,String date,String from,String destination,String time,String fare,String ridesharees,String model,String phone,String email,String remainder) {
         this.requestList = mActiveRideshares;
         this.onRequestClickListener=rideShareMoreInfo;
+        this.name=name;
+        this.from=from;
+        this.destination=destination;
+        this.fare=fare;
+        this.ridesharees=ridesharees;
+        this.model=model;
+        this.phone=phone;
+        this.email=email;
+        this.date=date;
+        this.time=time;
+        this.remainder=remainder;
     }
 
     @NonNull
@@ -56,18 +80,18 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
         final String time = activeRideshares.getTime();
         holder.phone.setText(phoneNum);
         holder.email.setText(email);
-        if (approval.equals("Approved")){
-            holder.approval.setText("Approved");
+        if (approval.equals(R.string.approved)){
+            holder.approval.setText(R.string.approved);
             holder.btnApprove.setVisibility(View.GONE);
             holder.btnDelete.setVisibility(View.GONE);
         }
-        else if (approval.equals("Declined")){
-            holder.approval.setText("Declined");
+        else if (approval.equals(mContext.getString(R.string.declined))){
+            holder.approval.setText(mContext.getString(R.string.declined));
             holder.btnApprove.setVisibility(View.GONE);
             holder.btnDelete.setVisibility(View.GONE);
         }
         else {
-            holder.approval.setText("Pending");
+            holder.approval.setText(R.string.pending);
             holder.btnApprove.setVisibility(View.VISIBLE);
             holder.btnDelete.setVisibility(View.VISIBLE);
         }
@@ -96,8 +120,8 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         //mContext.startActivity(new Intent(mContext, MainActivity.class));
-                                        Toast.makeText(mContext, "Request approved successfully.", Toast.LENGTH_LONG).show();
-                                        holder.approval.setText("Approved");
+                                        Toast.makeText(mContext, R.string.request_approved, Toast.LENGTH_LONG).show();
+                                        holder.approval.setText(R.string.approved);
                                         holder.btnApprove.setVisibility(View.GONE);
                                         holder.btnDelete.setVisibility(View.GONE);
                                     }
@@ -105,7 +129,22 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
                                 .addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(mContext, "Not approved. Try again later." + e, Toast.LENGTH_LONG).show();
+                                        Toast.makeText(mContext, mContext.getString(R.string.request_not_approved) + e, Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                        mRideShareInfo = new RideShareInfo(name, model, phone, date, from, destination, time, fare,ridesharees,email,String.valueOf(Integer.valueOf(remainder)-1));
+                        db.collection("RideShares").document(email).collection("all rideshares")
+                                .document(encode(date)+" at " + time).set(mRideShareInfo)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Toast.makeText(mContext,"RideShare started successfully",Toast.LENGTH_LONG).show();
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(mContext,"Not saved. Try again later.",Toast.LENGTH_LONG).show();
                                     }
                                 });
 
@@ -141,7 +180,7 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
                                     public void onSuccess(Void aVoid) {
                                         //mContext.startActivity(new Intent(mContext, MainActivity.class));
                                         Toast.makeText(mContext, "Request declined successfully.", Toast.LENGTH_LONG).show();
-                                        holder.approval.setText("Declined");
+                                        holder.approval.setText(R.string.declined);
                                         holder.btnApprove.setVisibility(View.GONE);
                                         holder.btnDelete.setVisibility(View.GONE);
                                     }
@@ -150,6 +189,21 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
                                         Toast.makeText(mContext, "Not approved. Try again later." + e, Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                        mRideShareInfo = new RideShareInfo(name, model, phone, date, from, destination, time, fare,ridesharees,email,String.valueOf(Integer.valueOf(remainder)+1));
+                        db.collection("RideShares").document(email).collection("all rideshares")
+                                .document(encode(date)+" at " + time).set(mRideShareInfo)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Toast.makeText(mContext,"RideShare started successfully",Toast.LENGTH_LONG).show();
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(mContext,"Not saved. Try again later.",Toast.LENGTH_LONG).show();
                                     }
                                 });
 
@@ -186,7 +240,7 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
         private TextView email,phone,approval;
         ImageButton btnDelete,btnApprove,btnPhone;
         RequestsAdapter.OnRequestClickListener onRequestClickListener;
-        public ViewHolder(View itemView, RequestsAdapter.OnRequestClickListener onRequestClickListener) {
+        ViewHolder(View itemView, RequestsAdapter.OnRequestClickListener onRequestClickListener) {
             super(itemView);
             this.onRequestClickListener = onRequestClickListener;
             email= itemView.findViewById(R.id.lr_email);

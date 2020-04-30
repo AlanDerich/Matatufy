@@ -42,24 +42,33 @@ private String mLongs;
         spDays = findViewById(R.id.spinnerDays);
         spOpening = findViewById(R.id.spinnerOpening);
         spClosing = findViewById(R.id.spinnerClosing);
-        Intent intent = getIntent();
-        mLats = intent.getStringExtra("latitude");
-        mLongs = intent.getStringExtra("longitude");
-        coOrd.setText(mLats + " : " + mLongs);
-        List<String> spinnerArray =  new ArrayList<String>();
+        List<String> spinnerArray = new ArrayList<>();
         spinnerArray.add("0600hrs");spinnerArray.add("0700hrs");spinnerArray.add("0800hrs");spinnerArray.add("0900hrs");spinnerArray.add("1000hrs");spinnerArray.add("1100hrs");spinnerArray.add("1500hrs");spinnerArray.add("1600hrs");spinnerArray.add("1700hrs");spinnerArray.add("1800hrs");spinnerArray.add("1900hrs");spinnerArray.add("2000hrs");spinnerArray.add("2100hrs");spinnerArray.add("2200hrs");spinnerArray.add("2300hrs");spinnerArray.add("0000hrs");spinnerArray.add("0100hrs");spinnerArray.add("0200hrs");spinnerArray.add("0300hrs");spinnerArray.add("0400hrs");spinnerArray.add("0500hrs");
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this, android.R.layout.simple_spinner_item, spinnerArray);
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
-        spOpening.setAdapter(adapter);
-        spClosing.setAdapter(adapter);
-        List<String> spinnerDays = new ArrayList<String>();
+        List<String> spinnerDays = new ArrayList<>();
         spinnerDays.add("Monday-Sunday");
         spinnerDays.add("Monday-Saturday");
         spinnerDays.add("Monday-Friday");
-        ArrayAdapter<String> daysAdapter = new ArrayAdapter<String>(
+        ArrayAdapter<String> daysAdapter = new ArrayAdapter<>(
                 this, android.R.layout.simple_spinner_item, spinnerDays);
+        Intent intent = getIntent();
+        mLats = intent.getStringExtra("latitude");
+        mLongs = intent.getStringExtra("longitude");
+        String from = intent.getStringExtra("from");
+        etFrom.setText(from);
+        String sacco = intent.getStringExtra("sacco");
+        etName.setText(sacco);
+        String open = intent.getStringExtra("open");
+        spOpening.setSelection(adapter.getPosition(open));
+        String close = intent.getStringExtra("close");
+        spClosing.setSelection(adapter.getPosition(close));
+        String days = intent.getStringExtra("days");
+        spDays.setSelection(daysAdapter.getPosition(days));
+        coOrd.setText(mLats + " : " + mLongs);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+        spOpening.setAdapter(adapter);
+        spClosing.setAdapter(adapter);
         spDays.setAdapter(daysAdapter);
 
     }

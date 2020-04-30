@@ -5,22 +5,20 @@ public class RideShareInfo {
     public String carModel;
     public String driverPhone;
     public String date;
+    public String remainder;
     public String from;
     public String destination;
     public String time;
     public String amount;
-
+    public String rideSharee;
+    public String email;
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public String getRemainder() {
+        return remainder;
     }
-
-    public String rideSharee;
-    public String email;
-
     public String getRideSharee() {
         return rideSharee;
     }
@@ -28,15 +26,6 @@ public class RideShareInfo {
     public String getDriverName() {
         return driverName;
     }
-
-    public String getCarModel() {
-        return carModel;
-    }
-
-    public String getDriverPhone() {
-        return driverPhone;
-    }
-
     public String getDate() {
         return date;
     }
@@ -61,7 +50,7 @@ public class RideShareInfo {
 
     }
 
-    public RideShareInfo(String driverName, String carModel, String driverPhone, String date, String from, String destination, String time, String amount,String rideSharee,String email) {
+    public RideShareInfo(String driverName, String carModel, String driverPhone, String date, String from, String destination, String time, String amount,String rideSharee,String email,String remainder) {
         this.driverName = driverName;
         this.carModel = carModel;
         this.driverPhone = driverPhone;
@@ -72,5 +61,6 @@ public class RideShareInfo {
         this.amount = amount;
         this.rideSharee = rideSharee;
         this.email = email;
+        this.remainder=remainder;
     }
 }

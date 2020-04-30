@@ -40,7 +40,7 @@ private ImageButton btnCall,btnMessage,btnEdit,btnDelete;
 private RecyclerView rvRequests;
 private FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
 private Button bookRide;
-    private String name,date,from,destination,time,fare,ridesharees,model;
+    private String name,date,from,destination,time,fare,ridesharees,model,remainder;
     private String phone;
     private String email;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -61,6 +61,7 @@ private Button bookRide;
         model = share.getStringExtra("RidesharerModel");
         phone = share.getStringExtra("RidesharerPhone");
         email = share.getStringExtra("RidesharerEmail");
+        remainder = share.getStringExtra("RidesharerRemainder");
 
         btnEdit=findViewById(R.id.imageButton_edit_details);
         btnDelete=findViewById(R.id.imageButtonDeleteRideshare);
@@ -196,24 +197,26 @@ private Button bookRide;
                                 if (!(input.getText().toString().isEmpty())) {
                                     String phoneNum = input.getText().toString();
                                     final ActiveRideshares activeRideshares = new ActiveRideshares(email, userEmail, date,time, phoneNum,"Pending");
-                                    db.collection("bookRideshares").document("available requests").collection(email+encode(" "+date +" "+ time)).document(userEmail)
-                                            .set(activeRideshares)
+                                    if (userEmail != null) {
+                                        db.collection("bookRideshares").document("available requests").collection(email+encode(" "+date +" "+ time)).document(userEmail)
+                                                .set(activeRideshares)
 
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    startActivity(new Intent(RideShareMoreInfo.this, MainActivity.class));
-                                                    bookRide.setEnabled(false);
-                                                    bookRide.setText("Booked");
-                                                    Toast.makeText(RideShareMoreInfo.this, "Request sent successfully.", Toast.LENGTH_LONG).show();
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    Toast.makeText(RideShareMoreInfo.this, "Not saved. Try again later." + e, Toast.LENGTH_LONG).show();
-                                                }
-                                            });
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        startActivity(new Intent(RideShareMoreInfo.this, MainActivity.class));
+                                                        bookRide.setEnabled(false);
+                                                        bookRide.setText(R.string.booked);
+                                                        Toast.makeText(RideShareMoreInfo.this, "Request sent successfully.", Toast.LENGTH_LONG).show();
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        Toast.makeText(RideShareMoreInfo.this, "Not saved. Try again later." + e, Toast.LENGTH_LONG).show();
+                                                    }
+                                                });
+                                    }
                                 } else {
                                     Toast.makeText(RideShareMoreInfo.this, "Please enter a valid phone number.", Toast.LENGTH_LONG).show();
                                 }
@@ -251,7 +254,7 @@ private Button bookRide;
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
                         if (!queryDocumentSnapshots.isEmpty()) {
-                            bookRide.setText("Approved");
+                            bookRide.setText(R.string.approved);
                             bookRide.setEnabled(false);
 
                         } else {
@@ -261,7 +264,7 @@ private Button bookRide;
                                         public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
                                             if (!queryDocumentSnapshots.isEmpty()) {
-                                                bookRide.setText("Not yet Approved");
+                                                bookRide.setText(R.string.not_yet_approved);
                                                 bookRide.setEnabled(false);
 
                                             } else {
@@ -313,7 +316,7 @@ private Button bookRide;
     private void populate(){
         rvRequests.setHasFixedSize(true);
         rvRequests.setLayoutManager(new LinearLayoutManager(this));
-        RequestsAdapter mRequestsAdapter = new RequestsAdapter(mActiveRideshares,this);
+        RequestsAdapter mRequestsAdapter = new RequestsAdapter(mActiveRideshares,this,name,date,from,destination,time,fare,ridesharees,model,phone,email,remainder);
         mRequestsAdapter.setHasStableIds(true);
         mRequestsAdapter.notifyDataSetChanged();
         rvRequests.setAdapter(mRequestsAdapter);

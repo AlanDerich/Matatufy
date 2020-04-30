@@ -16,6 +16,9 @@
         android:roundIcon="@mipmap/ic_my_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppThemeBase">
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-5255941258844848~4812516122"/>
         <activity android:name=".ChattingActivity"
             android:noHistory="true"/>
         <activity android:name=".RideShareMoreInfo" />

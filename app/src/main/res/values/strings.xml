@@ -17,4 +17,16 @@
     <string name="e_g_0712345678">e.g. 0712345678</string>
     <string name="departure_location">Departure location</string>
     <string name="tap_to_set_filters">Tap to set filters</string>
+    <string name="admob_id">ca-app-pub-5255941258844848~4812516122</string>
+    <string name="tap_filters">Tap to change filters</string>
+    <string name="approved">Approved</string>
+    <string name="declined">Declined</string>
+    <string name="pending">Pending</string>
+    <string name="request_approved">Request approved successfully.</string>
+    <string name="request_not_approved">Not approved. Try again later.</string>
+    <string name="verified">Verified</string>
+    <string name="change_prof_pic">Change Profile picture</string>
+    <string name="booked">Booked</string>
+    <string name="not_yet_approved">Not yet Approved</string>
+    <string name="mandatory">* fields are mandatory</string>
 </resources>

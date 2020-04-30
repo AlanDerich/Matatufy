@@ -38,6 +38,7 @@ public class RideShareAdapter extends RecyclerView.Adapter<RideShareAdapter.View
         holder.date.setText(rI.getDate());
         holder.time.setText(rI.getTime());
         holder.rideSharee.setText(rI.getRideSharee());
+        holder.remainder.setText(rI.getRemainder());
 
     }
     @Override
@@ -56,9 +57,9 @@ public class RideShareAdapter extends RecyclerView.Adapter<RideShareAdapter.View
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        private TextView driverName,from,to,date,time,rideSharee;
+        private TextView driverName,from,to,date,time,rideSharee,remainder;
         OnRideClickListener onRideClickListener;
-        public ViewHolder(View itemView,OnRideClickListener onRideClickListener) {
+        ViewHolder(View itemView, OnRideClickListener onRideClickListener) {
             super(itemView);
             this.onRideClickListener = onRideClickListener;
             driverName=itemView.findViewById(R.id.listDriverName);
@@ -67,6 +68,7 @@ public class RideShareAdapter extends RecyclerView.Adapter<RideShareAdapter.View
             date= itemView.findViewById(R.id.listDate);
             time= itemView.findViewById(R.id.listTime);
             rideSharee= itemView.findViewById(R.id.listStatus);
+            remainder= itemView.findViewById(R.id.listRem);
             itemView.setOnClickListener(this);
         }
 

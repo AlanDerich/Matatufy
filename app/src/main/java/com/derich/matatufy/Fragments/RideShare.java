@@ -173,12 +173,12 @@ public class RideShare extends Fragment implements RideShareAdapter.OnRideClickL
     /*public static String decode(String date){
         return date.replace(",","/");
     }*/
-    public void clearDefaults(){
+    private void clearDefaults(){
         mApplyDate = false;
         mApplyTo = false;
         mApplyFrom = false;
     }
-    public void fromToDateFilters(){
+    private void fromToDateFilters(){
         ArrayAdapter<String> fromAdapter = new ArrayAdapter<>(
                 getContext(), android.R.layout.simple_spinner_item, mSpinnerFrom);
         AlertDialog.Builder from = new AlertDialog.Builder(getContext(),R.style.AlertDialogStyle);
@@ -189,7 +189,7 @@ public class RideShare extends Fragment implements RideShareAdapter.OnRideClickL
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mFrom = mSpinnerFrom.get(which);
-                tvFilters.setText("Tap to change filters");
+                tvFilters.setText(R.string.tap_filters);
                 dialog.dismiss();
                 populateRecyclerView();
 
@@ -207,7 +207,7 @@ public class RideShare extends Fragment implements RideShareAdapter.OnRideClickL
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mTo = mSpinnerTo.get(which);
-                tvFilters.setText("Tap to change filters");
+                tvFilters.setText(R.string.tap_filters);
                 dialog.dismiss();
 
             }
@@ -224,7 +224,7 @@ public class RideShare extends Fragment implements RideShareAdapter.OnRideClickL
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mDate = mSpinnerDate.get(which);
-                tvFilters.setText("Tap to change filters");
+                tvFilters.setText(R.string.tap_filters);
                 dialog.dismiss();
 
             }
@@ -245,7 +245,7 @@ public class RideShare extends Fragment implements RideShareAdapter.OnRideClickL
             public void onClick(DialogInterface dialog, int which) {
                 int dee = mSpinnerFrom.size();
                 mFrom = mSpinnerFrom.get(which);
-                tvFilters.setText("Tap to change filters");
+                tvFilters.setText(R.string.tap_filters);
                 dialog.dismiss();
                 populateRecyclerView();
 
@@ -263,7 +263,7 @@ public class RideShare extends Fragment implements RideShareAdapter.OnRideClickL
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mTo = mSpinnerTo.get(which);
-                tvFilters.setText("Tap to change filters");
+                tvFilters.setText(R.string.tap_filters);
                 dialog.dismiss();
 
             }
@@ -286,7 +286,7 @@ public class RideShare extends Fragment implements RideShareAdapter.OnRideClickL
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mFrom = mSpinnerFrom.get(which);
-                tvFilters.setText("Tap to change filters");
+                tvFilters.setText(R.string.tap_filters);
                 dialog.dismiss();
                 populateRecyclerView();
 
@@ -304,7 +304,7 @@ public class RideShare extends Fragment implements RideShareAdapter.OnRideClickL
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mDate = mSpinnerDate.get(which);
-                tvFilters.setText("Tap to change filters");
+                tvFilters.setText(R.string.tap_filters);
                 dialog.dismiss();
 
             }
@@ -326,7 +326,7 @@ public class RideShare extends Fragment implements RideShareAdapter.OnRideClickL
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mTo = mSpinnerTo.get(which);
-                tvFilters.setText("Tap to change filters");
+                tvFilters.setText(R.string.tap_filters);
                 dialog.dismiss();
                 populateRecyclerView();
             }
@@ -343,7 +343,7 @@ public class RideShare extends Fragment implements RideShareAdapter.OnRideClickL
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mDate = mSpinnerDate.get(which);
-                tvFilters.setText("Tap to change filters");
+                tvFilters.setText(R.string.tap_filters);
                 dialog.dismiss();
 
             }
@@ -366,7 +366,7 @@ public class RideShare extends Fragment implements RideShareAdapter.OnRideClickL
             public void onClick(DialogInterface dialog, int which) {
                int dee = mSpinnerFrom.size();
                 mFrom = mSpinnerFrom.get(which);
-                tvFilters.setText("Tap to change filters");
+                tvFilters.setText(R.string.tap_filters);
                 dialog.dismiss();
                 populateRecyclerView();
 
@@ -388,7 +388,7 @@ public class RideShare extends Fragment implements RideShareAdapter.OnRideClickL
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mTo = mSpinnerTo.get(which);
-                tvFilters.setText("Tap to change filters");
+                tvFilters.setText(R.string.tap_filters);
                 dialog.dismiss();
                 populateRecyclerView();
 
@@ -410,7 +410,7 @@ public class RideShare extends Fragment implements RideShareAdapter.OnRideClickL
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mDate = mSpinnerDate.get(which);
-                tvFilters.setText("Tap to change filters");
+                tvFilters.setText(R.string.tap_filters);
                 dialog.dismiss();
                 populateRecyclerView();
 
@@ -609,7 +609,7 @@ public class RideShare extends Fragment implements RideShareAdapter.OnRideClickL
                                         mRideshareInfo.add(snapshot.toObject(RideShareInfo.class));
                                     populate();
                                     int size = mRideshareInfo.size();
-                                    int position=0;
+                                    int position;
                                     for (position=0;position<size;position++){
                                         RideShareInfo rideShareInfo= mRideshareInfo.get(position);
                                         mSpinnerDate.add(rideShareInfo.date);
@@ -658,6 +658,7 @@ public class RideShare extends Fragment implements RideShareAdapter.OnRideClickL
             intent.putExtra("RidesharerModel", minfo.carModel);
             intent.putExtra("RidesharerPhone", minfo.driverPhone);
             intent.putExtra("RidesharerEmail", minfo.email);
+            intent.putExtra("RidesharerRemainder", minfo.remainder);
             startActivity(intent);
         }
     }

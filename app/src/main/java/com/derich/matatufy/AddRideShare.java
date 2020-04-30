@@ -32,6 +32,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class AddRideShare extends AppCompatActivity {
     private EditText et_name,et_model,et_phone,et_from,et_to,et_cash,et_rideSharee;
@@ -85,10 +86,10 @@ public class AddRideShare extends AppCompatActivity {
                 Calendar mCurrentTime = Calendar.getInstance();
                 int hour = mCurrentTime.get(Calendar.HOUR_OF_DAY);
                 int minute = mCurrentTime.get(Calendar.MINUTE);
-                TimePickerDialog mTimePicker = new TimePickerDialog(AddRideShare.this, new TimePickerDialog.OnTimeSetListener() {
+                TimePickerDialog mTimePicker = new TimePickerDialog(AddRideShare.this,R.style.DatePickerTheme, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                        et_time.setText(selectedHour + " : " +selectedMinute);
+                        et_time.setText(String.format("%02d",selectedHour) + " : " +String.format("%02d",selectedMinute));
                         selHour = selectedHour;
                         selMin = selectedMinute;
                     }
@@ -108,10 +109,10 @@ public class AddRideShare extends AppCompatActivity {
                         mDate.set(Calendar.MONTH,month);
                         mDate.set(Calendar.DAY_OF_MONTH,day);
                         String format = "dd/MM/yyyy";
-                        SimpleDateFormat sdf = new SimpleDateFormat(format);et_date.setText(sdf.format(mDate.getTime()));
+                        SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);et_date.setText(sdf.format(mDate.getTime()));
                     }
                 };
-                new DatePickerDialog(AddRideShare.this,date,mDate.get(Calendar.YEAR),mDate.get(Calendar.MONTH),mDate.get(Calendar.DAY_OF_MONTH)).show();
+                new DatePickerDialog(AddRideShare.this,R.style.DatePickerTheme,date,mDate.get(Calendar.YEAR),mDate.get(Calendar.MONTH),mDate.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
                 
@@ -156,6 +157,7 @@ public class AddRideShare extends AppCompatActivity {
         FirebaseFirestore mFirestone = FirebaseFirestore.getInstance();
             String email = mUser.getEmail();
             Boolean verified = mUser.isEmailVerified();
+        if (email != null) {
             if (email.equals("")){
                 Toast.makeText(this,"You don't have an email address. Please click on your profile and add an email to continue.",Toast.LENGTH_LONG).show();
             }
@@ -167,13 +169,13 @@ public class AddRideShare extends AppCompatActivity {
                 }
                 else {
                     try {
-                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm",Locale.US);
                         final String currentDateandTimeOfAdd = sdf.format(new Date());
                         if (sdf.parse(date + " "+selHour + ":" + selMin).before(sdf.parse(currentDateandTimeOfAdd))) {
                             Toast.makeText(AddRideShare.this,"Please select a valid date and time",Toast.LENGTH_SHORT).show();
                         }
                         else {
-                            RideShareInfo mRideShareInfo = new RideShareInfo(driverName, carModel, driverPhone, date, from, destination, time, amount,rideSharees,email);
+                            RideShareInfo mRideShareInfo = new RideShareInfo(driverName, carModel, driverPhone, date, from, destination, time, amount,rideSharees,email,rideSharees);
                             mFirestone.collection("RideShares").document(email).collection("all rideshares")
                                     .document(encode(date)+" at " + time).set(mRideShareInfo)
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -195,6 +197,7 @@ public class AddRideShare extends AppCompatActivity {
                     }
 
                 }
+        }
         }
     }
 }

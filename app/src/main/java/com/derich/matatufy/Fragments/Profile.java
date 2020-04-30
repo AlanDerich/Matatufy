@@ -63,7 +63,6 @@ public class Profile extends Fragment {
         View view = inflater.inflate(R.layout.profile_fragment, container, false);
         tvName = view.findViewById(R.id.tvUsername);
         tvEmail = view.findViewById(R.id.tvEmail);
-        UID = view.findViewById(R.id.tvUid);
         Verify = view.findViewById(R.id.tvVerify);
         imgProfile = view.findViewById(R.id.imageView_prof_pic);
         tvPassword = view.findViewById(R.id.tvPassword);
@@ -80,7 +79,7 @@ public class Profile extends Fragment {
             Uri photoUrl = mUser.getPhotoUrl();
             boolean emailVerified = mUser.isEmailVerified();
             if (emailVerified){
-                Verify.setText("Verified");
+                Verify.setText(R.string.verified);
             }
             else {
 
@@ -101,30 +100,41 @@ public class Profile extends Fragment {
 
                                         }
                                         else {
-                                            Toast.makeText(getContext(), "Email not sent.",Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getContext(), "Email not sent. Try again later.",Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                 });}
                     }
                 });
             }
-            String uid = mUser.getUid();
-            if (name!=""){
+            //String uid = mUser.getUid();
+            if (!name.equals("")){
                 tvName.setText(name);}
             if (email!=null){
                 if (!email.equals(""))
                 {
                 tvEmail.setText(email);}
             }
-            UID.setText(uid);
-            if (photoUrl != null){
+           // UID.setText(uid);
+            if (photoUrl != null && !Uri.EMPTY.equals(photoUrl)){
                 Glide.with(this).load(photoUrl).into(imgProfile);
             }
             imgProfile.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    chooseImage();
-
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.AlertDialogStyle);
+                    builder.setTitle("Alert!");
+                    final TextView tvChange = new TextView(getContext());
+                    tvChange.setTextSize(22);
+                    tvChange.setText(R.string.change_prof_pic);
+                    tvChange.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            chooseImage();
+                        }
+                    });
+                    builder.setView(tvChange);
+                    builder.show();
 
                 }
             });
@@ -382,7 +392,7 @@ public class Profile extends Fragment {
         }
     }
 
-    public void signOut() {
+    private void signOut() {
         AuthUI.getInstance()
                 .signOut(getContext())
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
