@@ -80,12 +80,12 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
         final String time = activeRideshares.getTime();
         holder.phone.setText(phoneNum);
         holder.email.setText(email);
-        if (approval.equals(R.string.approved)){
+        if (approval.equals("Approved")){
             holder.approval.setText(R.string.approved);
             holder.btnApprove.setVisibility(View.GONE);
             holder.btnDelete.setVisibility(View.GONE);
         }
-        else if (approval.equals(mContext.getString(R.string.declined))){
+        else if (approval.equals("Declined")){
             holder.approval.setText(mContext.getString(R.string.declined));
             holder.btnApprove.setVisibility(View.GONE);
             holder.btnDelete.setVisibility(View.GONE);
@@ -113,7 +113,7 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         final ActiveRideshares activeRideshares = new ActiveRideshares(ridesharerEmail, email, date,time, phoneNum,"Approved");
-                        db.collection("bookRideshares").document("available requests").collection(ridesharerEmail+encode(" "+date +" "+ time)).document(email)
+                        db.collection("bookRideshares").document(ridesharerEmail+encode(" "+date +" "+ time)).collection("available requests").document(email)
                                 .set(activeRideshares)
 
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -132,13 +132,13 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
                                         Toast.makeText(mContext, mContext.getString(R.string.request_not_approved) + e, Toast.LENGTH_LONG).show();
                                     }
                                 });
-                        mRideShareInfo = new RideShareInfo(name, model, phone, date, from, destination, time, fare,ridesharees,email,String.valueOf(Integer.valueOf(remainder)-1));
-                        db.collection("RideShares").document(email).collection("all rideshares")
+                        mRideShareInfo = new RideShareInfo(name, model, phone, date, from, destination, time, fare,ridesharees,ridesharerEmail,String.valueOf(Integer.valueOf(remainder)-1));
+                        db.collection("RideShares").document(ridesharerEmail).collection("all rideshares")
                                 .document(encode(date)+" at " + time).set(mRideShareInfo)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
-                                        Toast.makeText(mContext,"RideShare started successfully",Toast.LENGTH_LONG).show();
+                                        Toast.makeText(mContext,"RideShare updated successfully",Toast.LENGTH_LONG).show();
                                     }
                                 })
                                 .addOnFailureListener(new OnFailureListener() {
@@ -191,7 +191,7 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
                                         Toast.makeText(mContext, "Not approved. Try again later." + e, Toast.LENGTH_LONG).show();
                                     }
                                 });
-                        mRideShareInfo = new RideShareInfo(name, model, phone, date, from, destination, time, fare,ridesharees,email,String.valueOf(Integer.valueOf(remainder)+1));
+                        mRideShareInfo = new RideShareInfo(name, model, phone, date, from, destination, time, fare,ridesharees,ridesharerEmail,String.valueOf(Integer.valueOf(remainder)+1));
                         db.collection("RideShares").document(email).collection("all rideshares")
                                 .document(encode(date)+" at " + time).set(mRideShareInfo)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {

@@ -3,11 +3,13 @@ package com.derich.matatufy;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,9 +43,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setUpNavigation();
         mUser = FirebaseAuth.getInstance().getCurrentUser();
-        MobileAds.initialize(this,"ca-app-pub-5255941258844848~4812516122");
+        MobileAds.initialize(this,"ca-app-pub-5255941258844848/6369140378");
        // AdRequest adRequest= new AdRequest().Builder().build();
         //main.xml ca-app-pub-5255941258844848/6369140378
+        //main.xml test ca-app-pub-5255941258844848~4812516122
       //  adViewMain.loadAd(AdRequest);
         MobileAds.initialize(this, new OnInitializationCompleteListener() {
             @Override
@@ -59,12 +62,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onAdLoaded() {
                 // Code to be executed when an ad finishes loading.
+                Toast.makeText(MainActivity.this,"banner ad loaded" ,Toast.LENGTH_LONG).show();
                 mAdView.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onAdFailedToLoad(int errorCode) {
                 // Code to be executed when an ad request fails.
+                Toast.makeText(MainActivity.this,"Failed to load banner ad errorcode " + errorCode,Toast.LENGTH_LONG).show();
+                Log.d("mAdView", "onAdFailedToLoad. But why? "+errorCode);
             }
 
             @Override

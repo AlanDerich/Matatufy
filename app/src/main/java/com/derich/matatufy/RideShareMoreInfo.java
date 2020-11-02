@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -86,7 +87,7 @@ private Button bookRide;
         textViewFare.setText(fare);
         textViewRideshare.setText(ridesharees);
         textViewModel.setText(model);
-        checkBooked();
+//        checkBooked();
         if (mUser.getEmail().equals(email)){
             btnCall.setVisibility(View.GONE);
             bookRide.setVisibility(View.GONE);
@@ -198,7 +199,7 @@ private Button bookRide;
                                     String phoneNum = input.getText().toString();
                                     final ActiveRideshares activeRideshares = new ActiveRideshares(email, userEmail, date,time, phoneNum,"Pending");
                                     if (userEmail != null) {
-                                        db.collection("bookRideshares").document("available requests").collection(email+encode(" "+date +" "+ time)).document(userEmail)
+                                        db.collection("bookRideshares").document(email+encode(" "+date +" "+ time)).collection("available requests").document(userEmail)
                                                 .set(activeRideshares)
 
                                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -248,7 +249,7 @@ private Button bookRide;
     }
 
     private void checkBooked() {
-        db.collectionGroup(email+encode(" "+date +" "+ time)).whereEqualTo("rideShareeName",mUser.getEmail()).whereEqualTo("status",true).get()
+        db.collectionGroup("available requests").whereEqualTo("rideShareeName",mUser.getEmail()).whereEqualTo("rideShareDate",date).whereEqualTo("rideSharerEmail",email).whereEqualTo("status","Approved").whereEqualTo("time",time).get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -258,7 +259,7 @@ private Button bookRide;
                             bookRide.setEnabled(false);
 
                         } else {
-                            db.collectionGroup(email+encode(" "+date +" "+ time)).whereEqualTo("rideShareeName",mUser.getEmail()).get()
+                            db.collectionGroup("available requests").whereEqualTo("rideShareeName",mUser.getEmail()).whereEqualTo("rideShareDate",date).whereEqualTo("rideSharerEmail",email).whereEqualTo("time",time).get()
                                     .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                                         @Override
                                         public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -276,6 +277,7 @@ private Button bookRide;
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
                                             Toast.makeText(RideShareMoreInfo.this,"Something went terribly wrong." + e,Toast.LENGTH_LONG).show();
+                                            Log.d("RideshreMoreInfo","Error: "+e);
                                         }
                                     });
                         }
@@ -285,13 +287,14 @@ private Button bookRide;
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(RideShareMoreInfo.this,"Something went terribly wrong." + e,Toast.LENGTH_LONG).show();
+                        Log.d("RideshreMoreInfo","Error: "+e);
                     }
                 });
     }
 
     private void populateRecyclerview() {
         mActiveRideshares=new ArrayList<>();
-        db.collectionGroup(email+encode(" "+date +" "+ time)).get()
+        db.collectionGroup("available requests").whereEqualTo("rideSharerEmail",mUser.getEmail()).whereEqualTo("time",time).get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -309,6 +312,7 @@ private Button bookRide;
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(RideShareMoreInfo.this,"Something went terribly wrong." + e,Toast.LENGTH_LONG).show();
+                        Log.d("MainActivity","error "+ e);
                     }
                 });
     }

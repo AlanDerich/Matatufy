@@ -136,7 +136,7 @@
 
     <EditText
         android:id="@+id/editText_add_to"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:ems="8"
@@ -159,7 +159,7 @@
 
     <TextView
         android:id="@+id/editText_add_time"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:autofillHints=""
@@ -191,5 +191,27 @@
         app:layout_constraintEnd_toEndOf="@+id/editText_add_time"
         app:layout_constraintStart_toStartOf="@+id/editText_add_time"
         app:layout_constraintTop_toBottomOf="@+id/editText_add_time" />
+    <TextView
+        android:id="@+id/textView10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="Required passengers:"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/textView20"
+        app:layout_constraintTop_toBottomOf="@+id/textView20" />
 
+    <EditText
+        android:id="@+id/editText_rideSharees"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="5"
+        android:hint="@string/no_needed"
+        android:inputType="number"
+        android:textColor="#ECDEDE"
+        app:layout_constraintBottom_toBottomOf="@+id/textView10"
+        app:layout_constraintEnd_toEndOf="@+id/editText_add_cash"
+        app:layout_constraintStart_toEndOf="@+id/textView10"
+        app:layout_constraintTop_toTopOf="@+id/textView10" />
 </androidx.constraintlayout.widget.ConstraintLayout>
