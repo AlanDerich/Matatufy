@@ -86,7 +86,7 @@ public class AddRideShare extends AppCompatActivity {
                 Calendar mCurrentTime = Calendar.getInstance();
                 int hour = mCurrentTime.get(Calendar.HOUR_OF_DAY);
                 int minute = mCurrentTime.get(Calendar.MINUTE);
-                TimePickerDialog mTimePicker = new TimePickerDialog(AddRideShare.this,R.style.DatePickerTheme, new TimePickerDialog.OnTimeSetListener() {
+                TimePickerDialog mTimePicker = new TimePickerDialog(AddRideShare.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                         et_time.setText(String.format("%02d",selectedHour) + " : " +String.format("%02d",selectedMinute));
@@ -112,7 +112,7 @@ public class AddRideShare extends AppCompatActivity {
                         SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);et_date.setText(sdf.format(mDate.getTime()));
                     }
                 };
-                new DatePickerDialog(AddRideShare.this,R.style.DatePickerTheme,date,mDate.get(Calendar.YEAR),mDate.get(Calendar.MONTH),mDate.get(Calendar.DAY_OF_MONTH)).show();
+                new DatePickerDialog(AddRideShare.this,date,mDate.get(Calendar.YEAR),mDate.get(Calendar.MONTH),mDate.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
                 

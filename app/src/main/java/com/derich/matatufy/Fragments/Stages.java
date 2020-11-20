@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
@@ -179,7 +178,6 @@ public class Stages extends Fragment implements LifecycleOwner {
                         info.setOrientation(LinearLayout.VERTICAL);
 
                         TextView title = new TextView(mContext);
-                        title.setTextColor(Color.parseColor("#0BF5AB"));
                         SpannableString spanTitle = new SpannableString(marker.getTitle());
                         spanTitle.setSpan(new UnderlineSpan(),0,spanTitle.length(),0);
                         title.setGravity(Gravity.CENTER);
@@ -188,7 +186,6 @@ public class Stages extends Fragment implements LifecycleOwner {
                         title.setText(spanTitle);
 
                         TextView snippet = new TextView(mContext);
-                        snippet.setTextColor(Color.WHITE);
                         snippet.setTypeface(null,Typeface.BOLD);
                         snippet.setTextSize(20);
                         snippet.setText(marker.getSnippet());
@@ -214,7 +211,7 @@ public class Stages extends Fragment implements LifecycleOwner {
                                  mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                             @Override
                             public boolean onMarkerClick(Marker marker) {
-                                final AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.AlertDialogStyle);
+                                final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                                 builder.setTitle("Confirmation.")
                                         .setMessage("Are you sure you want to add a new stage to this location?")
                                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -275,7 +272,7 @@ public class Stages extends Fragment implements LifecycleOwner {
                         longitude = String.valueOf(markerPos.longitude);
                         if (mUser!=null){
                             if (mUser.getEmail().equals("alangitonga15@gmail.com") || mUser.getEmail().equals("mwanjirug25@gmail.com")){
-                                final AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.AlertDialogStyle);
+                                final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                                 builder.setTitle("Choose an action");
                                 getStageInfo();
                                 String[] options = {"Add New Destination","Delete destination","Edit destination info","View destinations info"};
@@ -303,7 +300,7 @@ public class Stages extends Fragment implements LifecycleOwner {
                                                                     final List<String> destns = new ArrayList<>();
                                                                   for (QueryDocumentSnapshot doc: task.getResult())
                                                                       destns.add(doc.getId());
-                                                                  AlertDialog.Builder builderDestns = new AlertDialog.Builder(getContext(),R.style.AlertDialogStyle);
+                                                                  AlertDialog.Builder builderDestns = new AlertDialog.Builder(getContext());
                                                                   builderDestns.setTitle("Destinations on the stage");
                                                                   String[] listDestns = destns.toArray(new String[destns.size()]);
                                                                   builderDestns.setItems(listDestns, new DialogInterface.OnClickListener() {
@@ -384,7 +381,7 @@ public class Stages extends Fragment implements LifecycleOwner {
                 } else {
                     Toast.makeText(getContext(),"No data found.",Toast.LENGTH_LONG).show();
                 }
-                AlertDialog.Builder dialog = new AlertDialog.Builder(getContext(),R.style.AlertDialogStyle);
+                AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
                 Context context = getContext();
                 LinearLayout layout = new LinearLayout(context);
                 layout.setOrientation(LinearLayout.VERTICAL);
@@ -668,7 +665,7 @@ public class Stages extends Fragment implements LifecycleOwner {
         }
     }
     private void displayStageInfo(){
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.AlertDialogStyle);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         int size = stagesList.size();
 
         int position;
@@ -693,7 +690,7 @@ public class Stages extends Fragment implements LifecycleOwner {
                 builder.setAdapter(aa1, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        AlertDialog.Builder builderSelect = new AlertDialog.Builder(getContext(),R.style.AlertDialogStyle);
+                        AlertDialog.Builder builderSelect = new AlertDialog.Builder(getContext());
                         builderSelect.setTitle("Directions");
                         builderSelect.setMessage("Do you want to get the directions to the stage from your location?");
                         builderSelect.setCancelable(false);

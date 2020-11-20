@@ -27,19 +27,19 @@
         <item name="editTextColor">@color/colorPrimaryWhite</item>
     </style>
 
-    <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="android:colorAccent">#D4FFF7</item>
-        <item name="android:textColor">#E9F5F2</item>
-        <item name="android:textColorPrimary">#E9F5F2</item>
-        <item name="android:textColorAlertDialogListItem">#E9F5F2</item>
-    </style>
-    <style name="et" parent="@android:style/Widget.EditText">
-        <item name="android:textColor">@color/colorPrimaryWhite</item>
-    </style>
-    <style name="DatePickerTheme" parent="Theme.AppCompat.Light.Dialog">
-        <item name="android:colorAccent">#7177EC</item>
-        <item name="android:textColor">#7177EC</item>
-        <item name="android:textColorPrimary">#7177EC</item>
-    </style>
+<!--    <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">-->
+<!--        <item name="android:colorAccent">#D4FFF7</item>-->
+<!--        <item name="android:textColor">#E9F5F2</item>-->
+<!--        <item name="android:textColorPrimary">#E9F5F2</item>-->
+<!--        <item name="android:textColorAlertDialogListItem">#E9F5F2</item>-->
+<!--    </style>-->
+<!--    <style name="et" parent="@android:style/Widget.EditText">-->
+<!--        <item name="android:textColor">@color/colorPrimaryWhite</item>-->
+<!--    </style>-->
+<!--    <style name="DatePickerTheme" parent="Theme.AppCompat.Light.Dialog">-->
+<!--        <item name="android:colorAccent">#7177EC</item>-->
+<!--        <item name="android:textColor">#7177EC</item>-->
+<!--        <item name="android:textColorPrimary">#7177EC</item>-->
+<!--    </style>-->
     <color name="blue_500">#7177EC</color>
 </resources>

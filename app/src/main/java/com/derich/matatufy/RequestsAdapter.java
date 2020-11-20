@@ -105,7 +105,7 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
         holder.btnApprove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builderSelect = new AlertDialog.Builder(mContext,R.style.AlertDialogStyle);
+                AlertDialog.Builder builderSelect = new AlertDialog.Builder(mContext);
                 builderSelect.setTitle("APPROVE");
                 builderSelect.setMessage("Are you sure you want to approve the passenger to join your rideshare?");
                 builderSelect.setCancelable(false);
@@ -164,7 +164,7 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
         holder.btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builderSelect = new AlertDialog.Builder(mContext,R.style.AlertDialogStyle);
+                AlertDialog.Builder builderSelect = new AlertDialog.Builder(mContext);
                 builderSelect.setTitle("DECLINE");
                 builderSelect.setMessage("Are you sure you want to decline the passenger to join your rideshare?");
                 builderSelect.setCancelable(false);

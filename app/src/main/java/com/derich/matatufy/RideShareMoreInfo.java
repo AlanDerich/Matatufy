@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
@@ -174,19 +173,18 @@ private Button bookRide;
             public void onClick(View v) {
                 FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
                 final String userEmail = mUser.getEmail();
-                AlertDialog.Builder builderSelect = new AlertDialog.Builder(RideShareMoreInfo.this,R.style.AlertDialogStyle);
+                AlertDialog.Builder builderSelect = new AlertDialog.Builder(RideShareMoreInfo.this);
                 builderSelect.setTitle("Book Ride");
                 builderSelect.setMessage("Do you want to book a seat on the rideshare ?");
                 builderSelect.setCancelable(false);
                 builderSelect.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(RideShareMoreInfo.this,R.style.AlertDialogStyle);
+                        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(RideShareMoreInfo.this);
                         builder.setTitle("Phone Number");
 
 // Set up the input
                         final EditText input = new EditText(RideShareMoreInfo.this);
-                        input.setTextColor(Color.parseColor("#0BF5AB"));
 // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
                         input.setInputType(InputType.TYPE_CLASS_NUMBER);
                         builder.setView(input);

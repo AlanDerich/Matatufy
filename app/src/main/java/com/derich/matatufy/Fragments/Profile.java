@@ -41,9 +41,7 @@ import java.io.IOException;
 
 import static android.app.Activity.RESULT_OK;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+
 public class Profile extends Fragment {
     private FirebaseUser mUser;
     private TextView tvName,tvEmail,UID,Verify,tvPassword;
@@ -122,18 +120,25 @@ public class Profile extends Fragment {
             imgProfile.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.AlertDialogStyle);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                     builder.setTitle("Alert!");
                     final TextView tvChange = new TextView(getContext());
                     tvChange.setTextSize(22);
                     tvChange.setText(R.string.change_prof_pic);
-                    tvChange.setOnClickListener(new View.OnClickListener() {
+                    builder.setView(tvChange);
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick(View v) {
-                            chooseImage();
+                        public void onClick(DialogInterface dialog, int which) {
+                           chooseImage();
+                        }
+
+                    });
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
                         }
                     });
-                    builder.setView(tvChange);
                     builder.show();
 
                 }
@@ -154,12 +159,11 @@ public class Profile extends Fragment {
                 @Override
                 public void onClick(View view) {
                     m_text = "";
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.AlertDialogStyle);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                     builder.setTitle("Email Address");
 
 // Set up the input
                     final EditText input = new EditText(getContext());
-                    input.setTextColor(Color.parseColor("#0BF5AB"));
 // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
                     input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
                     builder.setView(input);
@@ -257,12 +261,11 @@ public class Profile extends Fragment {
 
     private void EditEmail() {
         m_text = "";
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.AlertDialogStyle);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("New Email");
 
 // Set up the input
         final EditText input = new EditText(getContext());
-        input.setTextColor(Color.parseColor("#0BF5AB"));
 // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
         input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
         builder.setView(input);
@@ -306,12 +309,12 @@ public class Profile extends Fragment {
 
     public void EditNameInfo(){
     m_text = "";
-    AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.AlertDialogStyle);
+    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
     builder.setTitle("New Username");
 
 // Set up the input
     final EditText input = new EditText(getContext());
-        input.setTextColor(Color.parseColor("#0BF5AB"));
+
 // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
     input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
     builder.setView(input);
